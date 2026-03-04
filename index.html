@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1645,22 +1647,36 @@ let state = {
   currentPhase:0, isBreathing:false,
   pendingReward:null, pendingTask:null, reflQ:'', reflA:'',
   sessions:[], collection:{}, xp:0, level:1, streak:0,
-  lastDate:null, teacherPin:'Br3@the2025!', schoolName:'',
+  lastDate:null, teacherPin:'', schoolName:'',
   students:{}, // {id:{name,class,sessions,xp,level}}
 };
 
+// ⚙️ TEACHER PIN DEFAULT — edit this line to change the default password
+const DEFAULT_PIN='Br3@the2025!';
+
 function saveToStorage(){
-  try{localStorage.setItem('bwm_v2',JSON.stringify(state));}catch(e){}
+  try{
+    // PIN stored separately so student data wipes can never erase it
+    localStorage.setItem('bwm_teacherPin', state.teacherPin||DEFAULT_PIN);
+    localStorage.setItem('bwm_v2', JSON.stringify(state));
+  }catch(e){}
 }
 function loadFromStorage(){
   try{
+    // Always load PIN from its own key — never from the main state blob
+    const savedPin=localStorage.getItem('bwm_teacherPin');
+    state.teacherPin=savedPin||DEFAULT_PIN;
+
     const d=localStorage.getItem('bwm_v2');
     if(d){
       const s=JSON.parse(d);
+      delete s.teacherPin; // strip PIN from blob so it cannot overwrite the dedicated key
       Object.assign(state,s);
       if(!state.students)state.students={};
     }
-  }catch(e){}
+  }catch(e){
+    state.teacherPin=DEFAULT_PIN;
+  }
 }
 
 // ============================================================

@@ -1,0 +1,3247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Breathe or Mrs. Howell Will 😮‍💨</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c14;
+  --surface: rgba(255,255,255,0.06);
+  --surface2: rgba(255,255,255,0.10);
+  --border: rgba(255,255,255,0.10);
+  --border2: rgba(255,255,255,0.18);
+  --text: #e8e4ff;
+  --text2: rgba(232,228,255,0.65);
+  --accent: #8b5cf6;
+  --accent2: #a78bfa;
+  --gold: #fbbf24;
+  --coral: #f97316;
+  --mint: #34d399;
+  --sky: #38bdf8;
+  --pink: #ec4899;
+  --radius: 20px;
+  --radius-sm: 12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  position:relative;
+}
+
+/* CANVAS */
+#bg-canvas{
+  position:fixed;inset:0;z-index:0;
+  width:100%;height:100%;
+}
+#app{
+  position:relative;
+  width:100%;height:100vh;
+}
+
+/* SCREENS */
+.screen{
+  display:none;
+  position:fixed;
+  top:0;left:0;right:0;bottom:64px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  padding:20px 16px 24px;
+  flex-direction:column;
+  align-items:center;
+  animation:screenIn .35s ease;
+  box-sizing:border-box;
+  z-index:10;
+}
+.screen.active{display:flex;}
+@keyframes screenIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* SCROLLBAR */
+.screen::-webkit-scrollbar{width:4px;}
+.screen::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px;}
+
+/* CARDS */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  backdrop-filter:blur(20px);
+  border-radius:var(--radius);
+  padding:24px;
+  width:100%;max-width:560px;
+}
+.card-glow{
+  box-shadow:0 0 40px rgba(139,92,246,0.15);
+  border-color:rgba(139,92,246,0.25);
+}
+
+/* TYPOGRAPHY */
+.title-xl{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2rem,6vw,3rem);
+  font-weight:800;
+  background:linear-gradient(135deg,#c4b5fd,#ec4899,#fbbf24);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1.1;
+}
+.title-lg{
+  font-family:'Syne',sans-serif;
+  font-size:1.4rem;font-weight:700;
+}
+.title-md{
+  font-family:'Syne',sans-serif;
+  font-size:1.1rem;font-weight:700;
+}
+.text-sm{font-size:.82rem;color:var(--text2);}
+.text-xs{font-size:.72rem;color:var(--text2);}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 22px;border-radius:50px;border:none;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:.92rem;font-weight:800;
+  transition:transform .15s,box-shadow .15s,filter .15s;
+  letter-spacing:.02em;
+}
+.btn:active{transform:scale(.97);}
+.btn:hover{filter:brightness(1.1);}
+.btn-primary{
+  background:linear-gradient(135deg,var(--accent),var(--pink));
+  color:#fff;
+  box-shadow:0 4px 20px rgba(139,92,246,.4);
+}
+.btn-secondary{
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  color:var(--text);
+}
+.btn-mint{
+  background:linear-gradient(135deg,#059669,var(--mint));
+  color:#fff;
+  box-shadow:0 4px 16px rgba(52,211,153,.3);
+}
+.btn-gold{
+  background:linear-gradient(135deg,#d97706,var(--gold));
+  color:#000;font-weight:900;
+  box-shadow:0 4px 16px rgba(251,191,36,.3);
+}
+.btn-red{background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;}
+.btn-sm{padding:7px 14px;font-size:.78rem;}
+.btn-xs{padding:5px 10px;font-size:.7rem;}
+.btn-block{width:100%;max-width:400px;}
+
+/* LANG SWITCHER */
+#lang-switcher{
+  display:inline-flex;gap:4px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:50px;
+  padding:4px;
+  backdrop-filter:blur(12px);
+  flex-shrink:0;
+}
+.lang-btn{
+  padding:4px 10px;border-radius:50px;border:none;cursor:pointer;
+  font-size:.72rem;font-weight:800;font-family:'Nunito',sans-serif;
+  background:none;color:var(--text2);transition:all .2s;
+}
+.lang-btn.active{background:var(--accent);color:#fff;}
+
+/* HOME */
+.home-header{
+  text-align:center;margin-bottom:20px;padding-top:14px;
+}
+.home-stats{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;
+  width:100%;max-width:560px;margin-bottom:16px;
+}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px;text-align:center;
+}
+.stat-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;}
+.stat-lbl{font-size:.68rem;color:var(--text2);margin-top:2px;}
+
+.xp-wrap{
+  width:100%;max-width:560px;margin-bottom:18px;
+  background:rgba(255,255,255,.06);border-radius:50px;height:8px;overflow:hidden;
+}
+.xp-fill{
+  height:100%;border-radius:50px;
+  background:linear-gradient(90deg,var(--accent),var(--gold));
+  transition:width .6s ease;
+}
+
+.nav-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  width:100%;max-width:560px;
+}
+.nav-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px 16px;cursor:pointer;
+  transition:all .2s;text-align:center;
+}
+.nav-card:hover{border-color:var(--accent2);background:rgba(139,92,246,.12);transform:translateY(-2px);}
+.nav-card .nc-icon{font-size:1.8rem;margin-bottom:8px;}
+.nav-card .nc-label{font-weight:800;font-size:.92rem;}
+.nav-card .nc-sub{font-size:.72rem;color:var(--text2);margin-top:2px;}
+
+/* TEACHER BADGE */
+/* Teacher access is keyboard-only (T+E+A) */
+
+/* MOOD */
+.mood-chips{
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0;
+}
+.mood-chip{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:50px;padding:7px 14px;cursor:pointer;
+  font-size:.85rem;font-weight:700;transition:all .2s;
+}
+.mood-chip:hover,.mood-chip.sel{
+  border-color:var(--accent2);background:rgba(139,92,246,.2);transform:scale(1.05);
+}
+.text-input{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:10px 14px;
+  color:var(--text);font-family:'Nunito',sans-serif;font-size:.9rem;
+  width:100%;outline:none;
+}
+.text-input:focus{border-color:var(--accent2);}
+textarea.text-input{resize:vertical;min-height:72px;}
+
+/* BREATH PICKER */
+.breath-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:16px 18px;
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:8px;cursor:pointer;transition:all .2s;
+}
+.breath-item:hover{border-color:var(--accent2);transform:translateX(4px);}
+.breath-item.locked{opacity:.45;cursor:not-allowed;}
+.breath-item.locked:hover{transform:none;border-color:var(--border);}
+.bi-icon{font-size:1.8rem;min-width:36px;}
+.bi-name{font-weight:800;font-size:.95rem;}
+.bi-desc{font-size:.75rem;color:var(--text2);margin-top:2px;}
+.bi-badge{
+  margin-left:auto;white-space:nowrap;
+  border-radius:50px;padding:3px 10px;font-size:.68rem;font-weight:800;
+}
+.badge-unlocked{background:var(--accent);color:#fff;}
+.badge-locked{background:rgba(255,255,255,.1);color:var(--text2);}
+.lock-hint{font-size:.68rem;color:var(--gold);margin-top:3px;}
+
+/* SCENE PICKER */
+.scene-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  width:100%;
+}
+.scene-opt{
+  border-radius:14px;padding:16px 8px;cursor:pointer;
+  border:2px solid transparent;transition:all .2s;text-align:center;
+  font-size:.78rem;font-weight:800;
+}
+.scene-opt:hover,.scene-opt.sel{border-color:var(--gold);transform:scale(1.04);}
+.scene-opt .si{font-size:1.7rem;margin-bottom:4px;}
+
+
+
+
+/* Vibe title buttons */
+.vibe-btn{
+  padding:6px 10px;border-radius:50px;font-size:.72rem;font-weight:700;
+  background:var(--surface2);border:1px solid var(--border);color:var(--text2);
+  cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;
+}
+.vibe-btn:hover{border-color:var(--accent);color:var(--accent2);}
+.vibe-btn.sel{background:linear-gradient(135deg,#7c3aed,#a855f7);border-color:transparent;color:#fff;}
+
+/* Bottom nav bar */
+#bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:20;
+  display:flex;
+  background:rgba(8,12,20,0.92);
+  border-top:1px solid rgba(255,255,255,0.1);
+  backdrop-filter:blur(16px);
+  padding:6px 0 max(6px,env(safe-area-inset-bottom));
+}
+.bnav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  background:none;border:none;color:var(--text2);
+  font-size:.62rem;font-family:'Nunito',sans-serif;font-weight:700;
+  padding:4px 0;cursor:pointer;transition:color .2s;
+  letter-spacing:.03em;text-transform:uppercase;
+}
+.bnav-btn span{font-size:.6rem;letter-spacing:.04em;}
+.bnav-btn:first-child{font-size:.9rem;}
+.bnav-btn:hover,.bnav-btn.active-tab{color:var(--accent2);}
+.bnav-btn:first-child{font-size:1rem;}
+/* push all screen content above bottom nav */
+/* screen padding-bottom handled in base .screen rule */
+
+/* Stop button — fixed top-right on breath screen */
+#screen-breath{position:relative;}
+.stop-corner-btn{
+  position:absolute;top:14px;right:14px;z-index:15;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.15);
+  color:var(--text2);font-size:.9rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,color .2s;
+  line-height:1;padding:0;
+}
+.stop-corner-btn:hover{background:rgba(239,68,68,0.25);color:#f87171;border-color:rgba(239,68,68,0.4);}
+
+/* BREATHING SCREEN */
+#screen-breath{
+  justify-content:space-between;
+  padding-top:16px;padding-bottom:16px;
+  overflow:hidden;
+  bottom:0;
+}
+.breath-top{text-align:center;}
+.breath-name-big{
+  font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;
+}
+.round-label{font-size:.8rem;color:var(--text2);margin-top:4px;}
+.cycle-dots{display:flex;gap:8px;justify-content:center;margin-top:10px;}
+.cdot{
+  width:10px;height:10px;border-radius:50%;
+  background:rgba(255,255,255,.15);transition:all .3s;
+}
+.cdot.done{background:var(--mint);}
+.cdot.cur{background:var(--accent2);transform:scale(1.4);}
+
+.orb-wrap{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  width:min(280px,70vw);height:min(280px,70vw);
+  margin:0 auto;
+}
+.orb-ring{
+  position:absolute;border-radius:50%;
+  border:1px solid rgba(255,255,255,.08);
+}
+.orb-ring-a{width:100%;height:100%;}
+.orb-ring-b{width:74%;height:74%;border-color:rgba(255,255,255,.12);}
+.orb{
+  width:48%;height:48%;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#a78bfa,#7c3aed);
+  box-shadow:0 0 50px rgba(139,92,246,.7),0 0 100px rgba(139,92,246,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:min(2.4rem,6vw);
+  transition:transform .08s linear,background .5s;
+  cursor:default;user-select:none;
+  position:relative;z-index:2;
+}
+
+/* SVG ring animation */
+.orb-svg{
+  position:absolute;inset:0;
+  animation:spinRing 8s linear infinite;
+}
+@keyframes spinRing{to{transform:rotate(360deg);}}
+
+.breath-phase-txt{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.3rem,5vw,1.8rem);font-weight:700;
+  text-align:center;min-height:44px;transition:all .3s;
+}
+.breath-hint{
+  text-align:center;font-size:.85rem;color:var(--text2);
+  min-height:22px;margin-bottom:12px;
+}
+
+.phase-bar-wrap{
+  width:100%;max-width:320px;height:5px;
+  background:rgba(255,255,255,.08);border-radius:3px;
+  margin:8px auto 16px;overflow:hidden;
+}
+.phase-bar{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--accent),var(--pink));
+  transition:width .05s linear;width:0%;
+}
+
+/* AFFIRMATION */
+.aff-card{
+  text-align:center;
+  background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(236,72,153,.1));
+  border:1px solid rgba(139,92,246,.25);
+  border-radius:var(--radius);padding:28px;
+  width:100%;max-width:500px;
+}
+.aff-quote{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.1rem,4vw,1.4rem);
+  font-weight:700;line-height:1.5;
+  color:var(--gold);margin:12px 0;
+}
+
+/* REWARD */
+.reward-big{
+  text-align:center;
+  background:linear-gradient(135deg,rgba(251,191,36,.1),rgba(249,115,22,.1));
+  border:1px solid rgba(251,191,36,.25);
+  border-radius:var(--radius);padding:24px;
+  margin:10px 0;
+}
+.reward-emoji-big{font-size:4rem;margin-bottom:8px;}
+.reward-nm{font-weight:800;font-size:1.1rem;margin-bottom:6px;}
+.reward-say{font-size:.82rem;color:var(--text2);line-height:1.6;}
+
+.task-big{
+  background:linear-gradient(135deg,rgba(52,211,153,.1),rgba(56,189,248,.08));
+  border:1px solid rgba(52,211,153,.22);
+  border-radius:var(--radius);padding:20px;margin:10px 0;
+}
+.task-nm{font-weight:800;font-size:1rem;margin-bottom:8px;}
+.task-txt{font-size:.85rem;color:var(--text2);line-height:1.6;}
+
+/* JOURNAL */
+.je{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:16px 18px;margin-bottom:8px;
+}
+.je-date{font-size:.68rem;color:var(--text2);margin-bottom:5px;}
+.je-title{font-weight:800;font-size:.9rem;margin-bottom:7px;}
+.je-moods{display:flex;align-items:center;gap:8px;font-size:.82rem;}
+.je-before{color:var(--coral);font-weight:700;}
+.je-after{color:var(--mint);font-weight:700;}
+.je-arrow{color:var(--text2);}
+.je-extra{font-size:.72rem;color:var(--text2);margin-top:5px;}
+.je-quote{font-size:.72rem;color:var(--text2);font-style:italic;margin-top:4px;opacity:.8;}
+.je-refl-q{font-size:.72rem;color:var(--accent2);margin-top:6px;font-weight:700;}
+
+/* COLLECTION */
+.coll-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  width:100%;
+}
+.coll-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:14px 8px;text-align:center;
+  cursor:pointer;transition:all .2s;position:relative;
+}
+.coll-item:hover{border-color:var(--gold);transform:translateY(-3px);}
+.coll-em{font-size:2.2rem;margin-bottom:5px;}
+.coll-nm{font-size:.7rem;font-weight:700;}
+.coll-cnt{
+  position:absolute;top:6px;right:8px;
+  background:var(--gold);color:#000;
+  border-radius:50px;font-size:.6rem;font-weight:900;padding:1px 6px;
+}
+
+/* GUIDE */
+.guide-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:18px;margin-bottom:10px;
+}
+.guide-item.locked{opacity:.5;}
+.gi-head{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.gi-em{font-size:2rem;}
+.gi-nm{font-weight:800;font-size:.95rem;}
+.gi-badge{font-size:.68rem;color:var(--accent2);}
+.gi-txt{font-size:.82rem;color:var(--text2);line-height:1.6;}
+
+/* TEACHER PANEL */
+.teacher-modal{
+  position:fixed;inset:0;z-index:30;
+  background:rgba(0,0,0,.8);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;padding:20px;
+  overflow-y:auto;
+}
+.teacher-modal.open{display:flex;}
+.teacher-panel{
+  background:#0d1120;border:1px solid rgba(251,191,36,.3);
+  border-radius:24px;padding:28px;
+  width:100%;max-width:640px;
+  max-height:90vh;overflow-y:auto;
+}
+.teacher-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+.ttab{
+  flex:1;padding:8px;border-radius:10px;cursor:pointer;
+  text-align:center;font-size:.78rem;font-weight:800;
+  background:var(--surface);border:1px solid transparent;
+  transition:all .2s;min-width:80px;
+}
+.ttab.act{background:var(--accent);border-color:var(--accent2);}
+.tcontent{display:none;}
+.tcontent.act{display:block;}
+.student-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:12px;
+  background:var(--surface);margin-bottom:6px;font-size:.82rem;
+}
+.sr-name{font-weight:700;flex:1;}
+.sr-class{font-size:.7rem;color:var(--text2);}
+.sr-count{
+  background:var(--mint);color:#000;border-radius:50px;
+  font-size:.65rem;font-weight:900;padding:2px 8px;
+}
+.class-badge{
+  background:rgba(139,92,246,.25);color:var(--accent2);
+  border-radius:50px;padding:2px 8px;font-size:.65rem;font-weight:800;
+}
+.input-row{display:flex;gap:8px;margin-bottom:10px;}
+.input-row .text-input{flex:1;}
+
+/* SYNC MODE */
+#screen-sync{
+  background:rgba(8,12,20,.95);
+}
+.sync-giant{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(3rem,15vw,8rem);
+  font-weight:800;
+  background:linear-gradient(135deg,#c4b5fd,#ec4899);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-align:center;line-height:1;
+  margin:20px 0;
+}
+.sync-hint{
+  font-size:clamp(.9rem,3vw,1.3rem);
+  text-align:center;color:var(--text2);
+  min-height:2em;
+}
+
+/* MODAL */
+.modal-wrap{
+  position:fixed;inset:0;z-index:25;
+  background:rgba(0,0,0,.75);display:none;
+  align-items:center;justify-content:center;padding:20px;
+}
+.modal-wrap.open{display:flex;animation:screenIn .2s ease;}
+.modal-box{
+  background:#0d1120;border:1px solid var(--border2);
+  border-radius:24px;padding:28px;
+  max-width:380px;width:100%;text-align:center;
+}
+.modal-box .m-em{font-size:3rem;margin-bottom:10px;}
+.modal-box .m-ttl{font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:8px;}
+.modal-box .m-txt{font-size:.85rem;color:var(--text2);line-height:1.6;}
+
+/* REGISTER MODAL */
+.reg-modal{
+  position:fixed;inset:0;z-index:35;
+  background:rgba(0,0,0,.85);display:none;
+  align-items:center;justify-content:center;padding:20px;
+}
+.reg-modal.open{display:flex;}
+.reg-box{
+  background:#0d1120;border:1px solid rgba(139,92,246,.35);
+  border-radius:24px;padding:28px;max-width:380px;width:100%;
+}
+
+/* DONE SCREEN */
+.done-summary{
+  background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);
+  border-radius:var(--radius);padding:18px;margin:14px 0;
+  width:100%;max-width:500px;
+}
+
+/* LEVEL BADGE */
+.lvl-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.35);
+  border-radius:50px;padding:5px 14px;
+  font-size:.78rem;font-weight:800;color:var(--accent2);
+}
+.streak-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);
+  border-radius:50px;padding:5px 12px;
+  font-size:.78rem;font-weight:800;color:var(--gold);
+}
+
+/* CONFETTI */
+.cfc{
+  position:fixed;width:8px;height:8px;border-radius:2px;
+  z-index:400;animation:cfcFall 3.5s ease forwards;pointer-events:none;
+}
+@keyframes cfcFall{
+  0%{transform:translateY(-10px) rotate(0deg);opacity:1;}
+  100%{transform:translateY(105vh) rotate(840deg);opacity:0;}
+}
+
+/* UTILITIES */
+.flex{display:flex;}.flex-col{flex-direction:column;}
+.items-center{align-items:center;}.justify-center{justify-content:center;}
+.justify-between{justify-content:space-between;}
+.gap-8{gap:8px;}.gap-12{gap:12px;}.gap-16{gap:16px;}
+.w-full{width:100%;}.max-w{max-width:560px;}
+.text-center{text-align:center;}
+.mt-8{margin-top:8px;}.mt-12{margin-top:12px;}.mt-16{margin-top:16px;}.mt-20{margin-top:20px;}
+.mb-8{margin-bottom:8px;}.mb-12{margin-bottom:12px;}.mb-16{margin-bottom:16px;}
+.bold{font-weight:800;}
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0;}
+.empty-state{text-align:center;padding:32px;color:var(--text2);font-size:.88rem;}
+.scroll-list{padding-right:4px;}
+.scroll-list::-webkit-scrollbar{width:3px;}
+.scroll-list::-webkit-scrollbar-thumb{background:var(--accent);}
+.badge-new{
+  background:var(--gold);color:#000;border-radius:50px;
+  padding:1px 6px;font-size:.6rem;font-weight:900;margin-left:4px;
+}
+.pill{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:50px;padding:4px 12px;font-size:.72rem;font-weight:700;
+}
+
+/* Leaderboard */
+.lb-row{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 14px;border-radius:12px;
+  background:var(--surface);margin-bottom:6px;
+}
+.lb-rank{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;min-width:28px;}
+.lb-name{font-weight:700;flex:1;}
+.lb-pts{font-size:.8rem;color:var(--gold);font-weight:700;}
+.lb-row.top1{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(249,115,22,.08));border:1px solid rgba(251,191,36,.25);}
+.lb-row.top2{background:rgba(192,192,192,.08);border:1px solid rgba(192,192,192,.15);}
+.lb-row.top3{background:rgba(205,127,50,.08);border:1px solid rgba(205,127,50,.15);}
+
+@media(max-width:420px){
+  .nav-grid{grid-template-columns:1fr 1fr;}
+  .coll-grid{grid-template-columns:repeat(3,1fr);}
+  .home-stats{grid-template-columns:1fr 1fr 1fr;}
+  .scene-grid{grid-template-columns:repeat(3,1fr);}
+}
+
+/* Period buttons */
+.period-btn{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:10px;padding:9px 16px;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:800;
+  color:var(--text2);transition:all .18s;
+}
+.period-btn:hover{border-color:var(--accent2);color:var(--text);background:rgba(139,92,246,.15);}
+.period-btn.sel{background:var(--accent);border-color:var(--accent2);color:#fff;box-shadow:0 0 14px rgba(139,92,246,.45);}
+
+/* Pulse */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.pulse{animation:pulse 2s infinite;}
+
+/* Float */
+@keyframes floatUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.float{animation:floatUp 3s ease-in-out infinite;}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- Language Switcher (lives inside guide screen header) -->
+
+<!-- Teacher access: press T+E+A together, invisible to students -->
+
+<div id="app">
+
+<!-- ===== HOME ===== -->
+<div id="screen-home" class="screen active">
+  <div class="home-header">
+    <div class="title-xl" data-t="appName">Breathe With Me</div>
+    <div class="text-sm mt-8" data-t="tagline">Your 5-minute calm zone ✨</div>
+    <div id="h-vibe" style="margin-top:6px;font-size:.78rem;font-weight:800;color:var(--accent2);letter-spacing:.04em;opacity:.9;"></div>
+  </div>
+
+  <div class="home-stats">
+    <div class="stat-card">
+      <div class="stat-val" id="h-level" style="color:var(--accent2)">1</div>
+      <div class="stat-lbl" data-t="level">Level</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="h-streak" style="color:var(--gold)">0</div>
+      <div class="stat-lbl" data-t="streak">🔥 Streak</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="h-sessions" style="color:var(--mint)">0</div>
+      <div class="stat-lbl" data-t="sessions">Sessions</div>
+    </div>
+  </div>
+
+  <div class="xp-wrap">
+    <div class="xp-fill" id="h-xpbar" style="width:0%"></div>
+  </div>
+  <div class="text-xs mb-12" id="h-xplabel">XP: 0 / 100</div>
+
+  <div class="nav-grid">
+    <div class="nav-card" onclick="startFlow()">
+      <div class="nc-icon">💨</div>
+      <div class="nc-label" data-t="startBreathing">Start Breathing</div>
+      <div class="nc-sub" data-t="beginSession">Begin a session</div>
+    </div>
+    <div class="nav-card" onclick="showScreen('screen-journal')">
+      <div class="nc-icon">📓</div>
+      <div class="nc-label" data-t="journal">Breath Journal</div>
+      <div class="nc-sub" id="h-journalCount">0 sessions</div>
+    </div>
+    <div class="nav-card" onclick="showScreen('screen-collection')">
+      <div class="nc-icon">🏆</div>
+      <div class="nc-label" data-t="collection">My Collection</div>
+      <div class="nc-sub" id="h-collCount">0 items</div>
+    </div>
+    <div class="nav-card" onclick="showScreen('screen-leaderboard')">
+      <div class="nc-icon">🥇</div>
+      <div class="nc-label" data-t="leaderboard">Leaderboard</div>
+      <div class="nc-sub" data-t="seeRankings">See top breathers</div>
+    </div>
+  </div>
+
+  <div class="mt-12 text-xs text-center" id="h-tip"></div>
+  <div class="mt-8 flex items-center gap-8" style="justify-content:center;">
+    <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-guide')" data-t="breathGuide">📖 Breath Guide</button>
+    <div style="display:inline-flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:4px;backdrop-filter:blur(12px);">
+      <button class="lang-btn active" id="home-lang-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="home-lang-es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" id="home-lang-fr" onclick="setLang('fr')">FR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REGISTER ===== -->
+<div id="screen-register" class="screen">
+  <div class="card card-glow" style="max-width:420px;">
+    <div class="title-lg text-center mb-12" data-t="welcome">Welcome! 👋</div>
+    <div class="text-sm text-center mb-16" data-t="registerHint">Tell us who you are so we can save your progress!</div>
+    <label class="text-xs mb-8 bold" data-t="yourName">Your Name</label>
+    <input class="text-input mb-12" id="reg-name" data-t-ph="namePlaceholder" placeholder="Your name...">
+    <label class="text-xs mb-8 bold">Your Vibe Title ✨</label>
+    <div style="font-size:.72rem;color:var(--text2);margin-bottom:8px;">Pick a title that's lowkey you</div>
+    <div id="vibe-grid" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
+      <button type="button" class="vibe-btn" onclick="selectVibe('Calm Demon 😈',this)">Calm Demon 😈</button>
+      <button type="button" class="vibe-btn" onclick="selectVibe('Zen Menace 🧘',this)">Zen Menace 🧘</button>
+      <button type="button" class="vibe-btn" onclick="selectVibe('Peace Lord 🕊️',this)">Peace Lord 🕊️</button>
+      <button type="button" class="vibe-btn" onclick="selectVibe('Soft G 🌸',this)">Soft G 🌸</button>
+      <button type="button" class="vibe-btn" onclick="selectVibe('Chill Architect 🏛️',this)">Chill Architect 🏛️</button>
+      <button type="button" class="vibe-btn" onclick="selectVibe('Breath Boss 💨',this)">Breath Boss 💨</button>
+      <button type="button" class="vibe-btn" onclick="selectVibe('Storm Proof ⚡',this)">Storm Proof ⚡</button>
+      <button type="button" class="vibe-btn" onclick="selectVibe('Galaxy Brain 🧠',this)">Galaxy Brain 🧠</button>
+      <button type="button" class="vibe-btn" onclick="selectVibe('Unbothered 💅',this)">Unbothered 💅</button>
+      <button type="button" class="vibe-btn" onclick="selectVibe('Midnight Calm 🌙',this)">Midnight Calm 🌙</button>
+    </div>
+    <input type="hidden" id="reg-vibe" value="">
+    <label class="text-xs mb-8 bold" data-t="yourClass">Your Class Period</label>
+    <div id="period-btns" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+      <div style="font-size:.7rem;color:var(--text2);width:100%;margin-bottom:2px;">A Block</div>
+      <button type="button" class="period-btn" onclick="selectPeriod('A1',this)">A1</button>
+      <button type="button" class="period-btn" onclick="selectPeriod('A2',this)">A2</button>
+      <button type="button" class="period-btn" onclick="selectPeriod('A5',this)">A5</button>
+      <button type="button" class="period-btn" onclick="selectPeriod('A6',this)">A6</button>
+      <div style="font-size:.7rem;color:var(--text2);width:100%;margin-bottom:2px;margin-top:4px;">B Block</div>
+      <button type="button" class="period-btn" onclick="selectPeriod('B1',this)">B1</button>
+      <button type="button" class="period-btn" onclick="selectPeriod('B2',this)">B2</button>
+      <button type="button" class="period-btn" onclick="selectPeriod('B5',this)">B5</button>
+      <button type="button" class="period-btn" onclick="selectPeriod('B6',this)">B6</button>
+    </div>
+    <input type="hidden" id="reg-class" value="">
+    <button class="btn btn-primary btn-block" style="align-self:center" onclick="registerStudent()" data-t="letsGo">Let's Go! 🚀</button>
+  </div>
+</div>
+
+<!-- ===== SCENE PICKER ===== -->
+<div id="screen-scene" class="screen">
+  <div class="card" style="max-width:500px;">
+    <div class="title-lg text-center mb-8" data-t="pickScene">🌍 Pick Your Scene</div>
+    <div class="text-sm text-center mb-16" data-t="pickSceneHint">Where do you want to breathe today?</div>
+    <div class="scene-grid" id="scene-grid"></div>
+
+    <div class="flex gap-8 justify-center mt-16">
+      <button class="btn btn-secondary" onclick="showScreen('screen-home')" data-t="back">← Back</button>
+      <button class="btn btn-primary" onclick="showScreen('screen-mood-before')" data-t="continue">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MOOD BEFORE ===== -->
+<div id="screen-mood-before" class="screen">
+  <div class="card" style="max-width:500px;">
+    <div class="title-lg text-center mb-8" data-t="howFeeling">💭 How are you feeling right now?</div>
+    <div class="text-sm text-center" data-t="moodHint">Pick a word or type your own — no wrong answers!</div>
+    <div class="mood-chips" id="mood-before-chips"></div>
+    <input class="text-input" id="mood-before-custom" data-t-ph="typeOwn" placeholder="Or type your own feeling...">
+    <div class="flex gap-8 justify-center mt-16">
+      <button class="btn btn-secondary" onclick="showScreen('screen-scene')" data-t="back">← Back</button>
+      <button class="btn btn-primary" onclick="goToBreathPick()" data-t="next">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BREATH PICKER ===== -->
+<div id="screen-breath-pick" class="screen">
+  <div class="card" style="max-width:500px;">
+    <div class="title-lg text-center mb-16" data-t="chooseBreath">🫁 Choose Your Breath</div>
+    <div id="breath-list"></div>
+    <button class="btn btn-secondary w-full mt-8" onclick="showScreen('screen-mood-before')" data-t="back">← Back</button>
+  </div>
+</div>
+
+<!-- ===== BREATHING ===== -->
+<div id="screen-breath" class="screen">
+  <button class="stop-corner-btn" onclick="stopBreathing()" title="Stop session">✕</button>
+  <div class="breath-top">
+    <div class="breath-name-big" id="br-name"></div>
+    <div class="round-label" id="br-round-lbl"></div>
+    <div class="cycle-dots" id="br-dots"></div>
+  </div>
+
+  <div>
+    <div class="orb-wrap">
+      <div class="orb-ring orb-ring-a"></div>
+      <div class="orb-ring orb-ring-b"></div>
+      <!-- SVG spinning ring -->
+      <svg class="orb-svg" viewBox="0 0 280 280" fill="none">
+        <circle cx="140" cy="140" r="130" stroke="rgba(139,92,246,0.25)" stroke-width="1.5" stroke-dasharray="8 14"/>
+      </svg>
+      <div class="orb" id="br-orb">
+        <svg id="girl-svg" viewBox="0 0 120 130" width="88%" height="88%"
+             style="display:block;margin:auto;overflow:visible;"
+             xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="sk" cx="44%" cy="36%" r="58%">
+              <stop offset="0%" stop-color="#f0b887"/>
+              <stop offset="50%" stop-color="#d4854a"/>
+              <stop offset="100%" stop-color="#b5611e"/>
+            </radialGradient>
+            <radialGradient id="hr" cx="40%" cy="25%" r="65%">
+              <stop offset="0%" stop-color="#3d1800"/>
+              <stop offset="60%" stop-color="#1e0900"/>
+              <stop offset="100%" stop-color="#0d0400"/>
+            </radialGradient>
+            <radialGradient id="bsh" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#e05828" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#e05828" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="tshirt" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#a8dfc5"/>
+              <stop offset="100%" stop-color="#68b898"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Shirt -->
+          <path d="M34 118 Q34 105 44 102 Q52 99 60 99 Q68 99 76 102 Q86 105 86 118 Z" fill="url(#tshirt)"/>
+          <!-- Neck -->
+          <rect x="54" y="83" width="12" height="13" rx="5" fill="url(#sk)"/>
+
+          <!-- Face — big soft circle -->
+          <circle cx="60" cy="66" r="28" fill="url(#sk)"/>
+
+          <!-- Subtle chin shadow -->
+          <ellipse cx="60" cy="90" rx="14" ry="4" fill="#b56020" opacity="0.15"/>
+
+          <!-- Cheek blush — big and soft like image 3 -->
+          <ellipse cx="36" cy="72" rx="12" ry="9" fill="url(#bsh)"/>
+          <ellipse cx="84" cy="72" rx="12" ry="9" fill="url(#bsh)"/>
+
+          <!-- Eyes — gentle upward curve, very peaceful (image 3 style) -->
+          <path d="M44 63 Q52 57 60 63" stroke="#1a0800" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+          <path d="M60 63 Q68 57 76 63" stroke="#1a0800" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+          <!-- Tiny eyelid fill — makes eyes look soft not just lines -->
+          <path d="M44 63 Q52 57 60 63" stroke="none" fill="#c07040" opacity="0.12"/>
+          <path d="M60 63 Q68 57 76 63" stroke="none" fill="#c07040" opacity="0.12"/>
+          <!-- 3 lashes each eye -->
+          <line x1="46" y1="62.5" x2="44.5" y2="59.5" stroke="#1a0800" stroke-width="1.4" stroke-linecap="round"/>
+          <line x1="52" y1="59"   x2="52"   y2="56.5" stroke="#1a0800" stroke-width="1.4" stroke-linecap="round"/>
+          <line x1="58" y1="62.5" x2="59.5" y2="59.5" stroke="#1a0800" stroke-width="1.4" stroke-linecap="round"/>
+          <line x1="62" y1="62.5" x2="60.5" y2="59.5" stroke="#1a0800" stroke-width="1.4" stroke-linecap="round"/>
+          <line x1="68" y1="59"   x2="68"   y2="56.5" stroke="#1a0800" stroke-width="1.4" stroke-linecap="round"/>
+          <line x1="74" y1="62.5" x2="75.5" y2="59.5" stroke="#1a0800" stroke-width="1.4" stroke-linecap="round"/>
+
+          <!-- Nose — two tiny nostrils, very subtle -->
+          <circle cx="57" cy="72" r="1.6" fill="#9a4810" opacity="0.3"/>
+          <circle cx="63" cy="72" r="1.6" fill="#9a4810" opacity="0.3"/>
+
+          <!-- Mouth — sweet closed smile -->
+          <path d="M52 79 Q60 86 68 79" stroke="#c06030" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M52.5 79.5 Q56 83 60 84 Q64 83 67.5 79.5" fill="#d07848" opacity="0.5"/>
+
+          <!-- Breath puffs -->
+          <circle cx="60" cy="90" r="2.5" fill="rgba(255,255,255,0.4)">
+            <animate attributeName="cy" values="90;84;76" dur="2.2s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="2.5;3;1" dur="2.2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.4;0.15;0" dur="2.2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="56" cy="92" r="1.6" fill="rgba(255,255,255,0.3)">
+            <animate attributeName="cy" values="92;86;78" dur="2.6s" begin="0.6s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="1.6;2;0.7" dur="2.6s" begin="0.6s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.3;0.1;0" dur="2.6s" begin="0.6s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="64" cy="92" r="1.3" fill="rgba(255,255,255,0.25)">
+            <animate attributeName="cy" values="92;86;79" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="1.3;1.7;0.6" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.25;0.08;0" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
+          </circle>
+
+          <!-- BIG FLUFFY NATURAL HAIR — soft rounded cloud shape -->
+          <!-- Dark base/shadow behind head -->
+          <ellipse cx="60" cy="42" rx="37" ry="34" fill="#180800"/>
+
+          <!-- Main hair mass — many overlapping soft circles = fluffy cloud -->
+          <!-- Outer profile bumps -->
+          <circle cx="24" cy="55" r="18" fill="#200d00"/>
+          <circle cx="96" cy="55" r="18" fill="#200d00"/>
+          <circle cx="20" cy="42" r="15" fill="#1a0a00"/>
+          <circle cx="100" cy="42" r="15" fill="#1a0a00"/>
+          <circle cx="32" cy="20" r="16" fill="#1e0c00"/>
+          <circle cx="88" cy="20" r="16" fill="#1e0c00"/>
+          <circle cx="60" cy="13" r="18" fill="#201000"/>
+          <circle cx="18" cy="62" r="11" fill="#180900"/>
+          <circle cx="102" cy="62" r="11" fill="#180900"/>
+
+          <!-- Inner hair volume — slightly lighter for depth -->
+          <circle cx="38" cy="32" r="18" fill="#2a1200"/>
+          <circle cx="82" cy="32" r="18" fill="#2a1200"/>
+          <circle cx="60" cy="22" r="20" fill="#2e1500"/>
+          <circle cx="44" cy="44" r="14" fill="#251000"/>
+          <circle cx="76" cy="44" r="14" fill="#251000"/>
+
+          <!-- Hairline — blends hair into forehead naturally -->
+          <path d="M35 50 Q42 34 60 30 Q78 34 85 50" fill="#2a1200"/>
+
+          <!-- Subtle shine on top -->
+          <ellipse cx="50" cy="19" rx="8" ry="5" fill="rgba(255,140,40,0.09)" transform="rotate(-15,50,19)"/>
+          <ellipse cx="68" cy="16" rx="7" ry="4" fill="rgba(255,140,40,0.07)"/>
+
+          <!-- Butterfly clip — upper right of hair, pink & gold -->
+          <g transform="translate(85,26) rotate(20)">
+            <ellipse cx="-10" cy="-5" rx="11" ry="7" fill="#fbbfd8" opacity="0.95"/>
+            <ellipse cx=" 10" cy="-5" rx="11" ry="7" fill="#f472b6" opacity="0.95"/>
+            <ellipse cx="-8"  cy=" 5" rx="8"  ry="5" fill="#ec4899" opacity="0.9"/>
+            <ellipse cx=" 8"  cy=" 5" rx="8"  ry="5" fill="#db2777" opacity="0.9"/>
+            <path d="M0,-1 Q-7,-7 -15,-4" stroke="rgba(255,255,255,0.3)" stroke-width="0.9" fill="none"/>
+            <path d="M0, 1 Q-6, 6 -12, 6" stroke="rgba(255,255,255,0.2)" stroke-width="0.7" fill="none"/>
+            <path d="M0,-1 Q 7,-7  15,-4" stroke="rgba(255,255,255,0.3)" stroke-width="0.9" fill="none"/>
+            <path d="M0, 1 Q 6, 6  12, 6" stroke="rgba(255,255,255,0.2)" stroke-width="0.7" fill="none"/>
+            <circle cx="-7" cy="-2" r="1.8" fill="rgba(255,255,255,0.28)"/>
+            <circle cx=" 7" cy="-2" r="1.8" fill="rgba(255,255,255,0.28)"/>
+            <ellipse cx="0" cy="0" rx="2.2" ry="5" fill="#fbbf24"/>
+            <circle  cx="0" cy="-5" r="1.6" fill="#fde68a"/>
+            <path d="M-0.8,-5 Q-5,-11 -4,-14" stroke="#fbbfd8" stroke-width="1" fill="none" stroke-linecap="round"/>
+            <path d="M 0.8,-5 Q 5,-11  4,-14" stroke="#fbbfd8" stroke-width="1" fill="none" stroke-linecap="round"/>
+            <circle cx="-4" cy="-14" r="1.5" fill="#ec4899"/>
+            <circle cx=" 4" cy="-14" r="1.5" fill="#ec4899"/>
+          </g>
+          <!-- Sparkle near clip -->
+          <text x="91" y="14" font-size="7" fill="rgba(255,210,230,0.8)" transform="rotate(10,91,14)">✦</text>
+        </svg>
+      </div>      </div>
+    </div>
+
+    <div class="breath-phase-txt" id="br-phase-txt">Get Ready...</div>
+    <div class="breath-hint" id="br-hint"></div>
+    <div class="phase-bar-wrap">
+      <div class="phase-bar" id="br-phasebar"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== AFFIRMATION MID ===== -->
+<div id="screen-affirmation" class="screen" style="justify-content:flex-start;padding-top:60px;">
+  <div class="aff-card">
+    <div style="font-size:2.5rem;">✨</div>
+    <div class="title-md mt-8" data-t="roundComplete">Round Complete!</div>
+    <div class="aff-quote" id="aff-text"></div>
+    <div class="text-sm" id="aff-rounds"></div>
+    <div class="flex gap-8 justify-center mt-16">
+      <button class="btn btn-secondary" onclick="stopBreathing()" data-t="imDone">I'm done</button>
+      <button class="btn btn-primary" onclick="continueBreathing()" data-t="keepGoing">Keep going 💪</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REWARD SCREEN ===== -->
+<div id="screen-reward" class="screen" style="justify-content:flex-start;padding-top:24px;">
+  <div class="card card-glow" style="max-width:480px;width:100%;">
+    <div class="title-lg text-center" style="color:var(--gold)">🎉 <span data-t="youEarned">You earned something!</span></div>
+    <div id="reward-display"></div>
+    <button class="btn btn-primary btn-block mt-16" onclick="goToMoodAfter()" data-t="nextCheckIn" style="margin-top:20px;">Next → Check In ✓</button>
+  </div>
+</div>
+
+<!-- ===== MOOD AFTER ===== -->
+<div id="screen-mood-after" class="screen">
+  <div class="card" style="max-width:500px;">
+    <div class="title-lg text-center mb-8" data-t="howNow">🌈 How do you feel NOW?</div>
+    <div class="text-sm text-center" data-t="didShift">Did anything shift?</div>
+    <div class="mood-chips" id="mood-after-chips"></div>
+    <input class="text-input" id="mood-after-custom" data-t-ph="typeOwn" placeholder="Or type your own feeling...">
+    <button class="btn btn-mint btn-block mt-16" style="align-self:center" onclick="goToReflection()" data-t="finish">Finish Session ✓</button>
+  </div>
+</div>
+
+<!-- ===== REFLECTION ===== -->
+<div id="screen-reflection" class="screen" style="justify-content:flex-start;padding-top:40px;">
+  <div class="card" style="max-width:480px;">
+    <div style="font-size:2.5rem;text-align:center">🌟</div>
+    <div class="title-md text-center mt-8 mb-16" data-t="reflect">Take a moment to reflect</div>
+    <p style="font-size:.95rem;line-height:1.6;text-align:center;margin-bottom:14px;" id="refl-question"></p>
+    <textarea class="text-input" id="refl-answer" data-t-ph="writeThoughts" placeholder="Write your thoughts here... (optional)"></textarea>
+    <button class="btn btn-gold btn-block mt-16" style="align-self:center" onclick="saveSession()" data-t="saveFinish">Save & Finish 💾</button>
+  </div>
+</div>
+
+<!-- ===== DONE ===== -->
+<div id="screen-done" class="screen" style="justify-content:flex-start;padding-top:40px;">
+  <div class="card card-glow" style="max-width:480px;text-align:center;">
+    <div style="font-size:3rem" class="float">🎊</div>
+    <div class="title-lg mt-8" data-t="amazingWork">Amazing work!</div>
+    <div class="text-sm mt-8" id="done-xp-msg"></div>
+    <div class="xp-wrap mt-8" style="max-width:300px;margin-left:auto;margin-right:auto;">
+      <div class="xp-fill" id="done-xpfill" style="width:0%"></div>
+    </div>
+    <div class="done-summary">
+      <div class="text-xs mb-8" data-t="todayJourney">Today's journey</div>
+      <div class="flex items-center justify-center gap-12">
+        <span style="color:var(--coral);font-weight:800;" id="done-before">—</span>
+        <span style="color:var(--text2)">→</span>
+        <span style="color:var(--mint);font-weight:800;" id="done-after">—</span>
+      </div>
+      <div class="text-xs mt-8" id="done-reward-recap"></div>
+    </div>
+    <button class="btn btn-primary btn-block mt-16" style="align-self:center" onclick="showScreen('screen-home')" data-t="backHome">Back to Home 🏠</button>
+  </div>
+</div>
+
+<!-- ===== JOURNAL ===== -->
+<div id="screen-journal" class="screen" style="align-items:flex-start;padding-top:28px;">
+  <div class="flex justify-between items-center w-full max-w mb-16">
+    <div class="title-lg" data-t="breathJournal">📓 Breath Journal</div>
+    <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-home')" data-t="home">← Home</button>
+  </div>
+  <div class="scroll-list w-full max-w" id="journal-list"></div>
+</div>
+
+<!-- ===== COLLECTION ===== -->
+<div id="screen-collection" class="screen" style="align-items:flex-start;padding-top:28px;">
+  <div class="flex justify-between items-center w-full max-w mb-8">
+    <div class="title-lg" data-t="myCollection">🏆 My Collection</div>
+    <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-home')" data-t="home">← Home</button>
+  </div>
+  <div class="text-xs mb-16 w-full max-w" data-t="tapItems">Tap items to learn what they do for you 💙</div>
+  <div class="coll-grid w-full max-w" id="coll-grid"></div>
+  <div class="empty-state w-full max-w" id="coll-empty" style="display:none"></div>
+</div>
+
+<!-- ===== LEADERBOARD ===== -->
+<div id="screen-leaderboard" class="screen" style="align-items:flex-start;padding-top:28px;">
+  <div class="flex justify-between items-center w-full max-w mb-16">
+    <div class="title-lg" data-t="leaderboard">🥇 Leaderboard</div>
+    <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-home')" data-t="home">← Home</button>
+  </div>
+  <div id="lb-list" class="w-full max-w"></div>
+</div>
+
+<!-- ===== GUIDE ===== -->
+<div id="screen-guide" class="screen" style="align-items:flex-start;padding-top:28px;">
+  <div class="flex justify-between items-center w-full max-w mb-16" style="gap:12px;">
+    <div class="title-lg" data-t="breathGuide">📖 Breath Guide</div>
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <div id="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+        <button class="lang-btn" onclick="setLang('fr')">FR</button>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-home')" data-t="home">← Home</button>
+    </div>
+  </div>
+  <div class="scroll-list w-full max-w" id="guide-list"></div>
+</div>
+
+<!-- ===== SYNC MODE ===== -->
+<div id="screen-sync" class="screen" style="justify-content:center;">
+  <div class="text-center w-full">
+    <div class="text-sm mb-8" id="sync-breath-name"></div>
+    <div class="sync-giant" id="sync-big-txt">Ready</div>
+    <div class="sync-hint" id="sync-hint-txt"></div>
+    <div class="phase-bar-wrap mt-20" style="max-width:400px;margin-left:auto;margin-right:auto;">
+      <div class="phase-bar" id="sync-phasebar"></div>
+    </div>
+    <div class="flex gap-12 justify-center mt-20">
+      <button class="btn btn-secondary" onclick="stopSync()" data-t="stop">⏹ Stop</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+  <!-- Bottom nav bar — always visible, always accessible -->
+  <nav id="bottom-nav">
+    <button class="bnav-btn" onclick="showScreen('screen-home')" id="bnav-home">🏠<span>Home</span></button>
+    <button class="bnav-btn" onclick="showScreen('screen-journal')" id="bnav-journal">📓<span>Journal</span></button>
+    <button class="bnav-btn" onclick="showScreen('screen-collection')" id="bnav-collection">🏆<span>Collection</span></button>
+    <button class="bnav-btn" onclick="showScreen('screen-leaderboard')" id="bnav-lb">🥇<span>Ranks</span></button>
+  </nav>
+</div><!-- end app -->
+
+<!-- ===== TEACHER PANEL ===== -->
+<div class="teacher-modal" id="teacher-modal">
+  <div class="teacher-panel">
+    <div class="flex justify-between items-center mb-16">
+      <div class="title-lg" style="color:var(--gold)">🍎 Teacher Dashboard</div>
+      <button class="btn btn-secondary btn-sm" onclick="closeTeacherPanel()">✕ Close</button>
+    </div>
+
+    <!-- PIN entry -->
+    <div id="teacher-lock" class="text-center">
+      <div class="text-sm mb-12" data-t="teacherPin">Enter teacher PIN</div>
+      <input class="text-input mb-12" id="pin-input" type="password" maxlength="6" placeholder="PIN">
+      <button class="btn btn-gold" onclick="unlockTeacher()">Unlock 🔓</button>
+    </div>
+
+    <div id="teacher-content" style="display:none">
+      <div class="teacher-tabs">
+        <div class="ttab act" onclick="openTTab('roster')" data-t="roster">Roster</div>
+        <div class="ttab" onclick="openTTab('credit')" data-t="credit">Credit</div>
+        <div class="ttab" onclick="openTTab('sync')" data-t="syncMode">Sync Mode</div>
+        <div class="ttab" onclick="openTTab('settings')" data-t="settings">Settings</div>
+      </div>
+
+      <!-- ROSTER -->
+      <div class="tcontent act" id="ttab-roster">
+        <div class="text-xs mb-12" data-t="allStudents">All registered students</div>
+        <div id="roster-list"></div>
+        <button class="btn btn-red btn-sm mt-8" onclick="clearRoster()">🗑 Clear All Data</button>
+      </div>
+
+      <!-- CREDIT -->
+      <div class="tcontent" id="ttab-credit">
+        <div class="text-xs mb-12" data-t="sessionCredit">Sessions by class period</div>
+        <div id="credit-list"></div>
+        <button class="btn btn-secondary btn-sm mt-12" onclick="exportCSV()" data-t="exportCSV">📥 Export CSV</button>
+      </div>
+
+      <!-- SYNC -->
+      <div class="tcontent" id="ttab-sync">
+        <div class="text-sm mb-12" data-t="syncDesc">Launch a synchronized breathing session for the whole class. Pick a breath and it runs on this screen.</div>
+        <div id="sync-breath-select"></div>
+
+        <!-- 432Hz during group session -->
+        <div style="margin:14px 0;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="toggleSync432(this)" id="sync-hz-row">
+          <div style="font-size:1.3rem;">🔔</div>
+          <div style="flex:1;">
+            <div style="font-weight:800;font-size:.82rem;">Play 432Hz During Session</div>
+            <div style="font-size:.7rem;color:var(--text2);margin-top:1px;">Soft healing tone plays while class breathes together</div>
+          </div>
+          <div id="sync-hz-btn" style="width:38px;height:20px;border-radius:50px;background:var(--surface);border:1px solid var(--border);position:relative;transition:background .3s;flex-shrink:0;">
+            <div id="sync-hz-knob" style="position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--text2);transition:all .3s;"></div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary mt-12 w-full" onclick="launchSync()" data-t="launchSync">🚀 Launch Class Breathe!</button>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="tcontent" id="ttab-settings">
+        <div class="text-sm mb-12" data-t="settingsDesc">Change teacher PIN and class name.</div>
+        <label class="text-xs bold mb-8">New PIN</label>
+        <div class="input-row">
+          <input class="text-input" id="new-pin" type="password" placeholder="New PIN">
+          <button class="btn btn-primary" onclick="savePin()" data-t="save">Save</button>
+        </div>
+        <label class="text-xs bold mb-8" data-t="schoolName">School / Class Name</label>
+        <div class="input-row">
+          <input class="text-input" id="school-name" placeholder="School or class name">
+          <button class="btn btn-primary" onclick="saveSchool()" data-t="save">Save</button>
+        </div>
+        <div id="settings-msg" class="text-xs mt-8" style="color:var(--mint)"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COLLECTIBLE MODAL -->
+<div class="modal-wrap" id="coll-modal" onclick="closeModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="m-em" id="m-em"></div>
+    <div class="m-ttl" id="m-ttl"></div>
+    <div class="m-txt" id="m-txt"></div>
+    <button class="btn btn-primary mt-16" onclick="closeModal()">💙 Got it!</button>
+  </div>
+</div>
+
+<!-- ===== ALL JAVASCRIPT ===== -->
+<script>
+// ============================================================
+// TRANSLATIONS
+// ============================================================
+const T = {
+  en:{
+    appName:"Breathe or Mrs. Howell Will 😮‍💨",tagline:"Your 5-minute calm zone — no cap ✨",
+    level:"Level",streak:"🔥 Streak",sessions:"Sessions",
+    startBreathing:"Start Breathing",beginSession:"Begin a session",
+    journal:"Breath Journal",collection:"My Collection",leaderboard:"Leaderboard",
+    seeRankings:"See top breathers",breathGuide:"📖 Breath Guide",
+    welcome:"Welcome! 👋",registerHint:"Tell us who you are so we can save your progress!",
+    yourName:"Your Name",namePlaceholder:"Your name...",
+    yourClass:"Your Class Period",classPeriod:"e.g. Period 2, Block A...",
+    letsGo:"Let's Go! 🚀",
+    pickScene:"🌍 Pick Your Scene",pickSceneHint:"Where do you want to breathe today?",
+    back:"← Back",continue:"Continue →",next:"Next →",home:"← Home",
+    howFeeling:"💭 How are you feeling right now?",
+    moodHint:"Pick a word or type your own — no wrong answers!",
+    typeOwn:"Or type your own feeling...",
+    chooseBreath:"🫁 Choose Your Breath",
+    stop:"⏹ Stop",roundComplete:"Round Complete!",
+    imDone:"I'm done",keepGoing:"Keep going 💪",
+    youEarned:"You earned something!",nextCheckIn:"Next → Check In",
+    howNow:"🌈 How do you feel NOW?",didShift:"Did anything shift?",
+    finish:"Finish Session ✓",reflect:"Take a moment to reflect",
+    writeThoughts:"Write your thoughts here... (optional)",
+    saveFinish:"Save & Finish 💾",amazingWork:"Amazing work!",
+    todayJourney:"Today's journey",backHome:"Back to Home 🏠",
+    breathJournal:"📓 Breath Journal",myCollection:"🏆 My Collection",
+    tapItems:"Tap items to learn what they do for you 💙",
+    teacherPin:"Enter teacher PIN",
+    roster:"Roster",credit:"Credit",syncMode:"Sync Mode",settings:"Settings",
+    allStudents:"All registered students",sessionCredit:"Sessions by class period",
+    exportCSV:"📥 Export CSV",syncDesc:"Launch a synchronized breathing session for the whole class.",
+    launchSync:"🚀 Launch Class Breathe!",settingsDesc:"Change teacher PIN and class name.",
+    schoolName:"School / Class Name",save:"Save",
+    rounds:"Round","of":"of",
+    unlocksAt:"Unlocks at level",
+    noCollectionYet:"Complete sessions to earn wellness items! 🌿",
+    noJournal:"No sessions yet. Start breathing to fill your journal! 🌿",
+    lockText:"🔒 Unlocks at level",
+    tip0:"💡 3 slow breaths can calm your nervous system!",
+    tip1:"🌟 Breathing slowly signals SAFETY to your brain.",
+    tip2:"🧠 Your breath is the only thing you can control both consciously AND automatically.",
+    tip3:"💪 The Navy SEALs use box breathing before high-stress missions.",
+    tip4:"🌊 Alternate nostril breathing balances both hemispheres of your brain.",
+    tip5:"🔥 Fire breath wakes up your body better than coffee — minus the crash.",
+  },
+  es:{
+    appName:"Respira o la Sra. Howell lo hará 😮‍💨",tagline:"Tu zona de calma — sin mentiras ✨",
+    level:"Nivel",streak:"🔥 Racha",sessions:"Sesiones",
+    startBreathing:"Empezar a Respirar",beginSession:"Comenzar sesión",
+    journal:"Diario de Respiración",collection:"Mi Colección",leaderboard:"Clasificación",
+    seeRankings:"Ver los mejores",breathGuide:"📖 Guía de Respiración",
+    welcome:"¡Bienvenido/a! 👋",registerHint:"¡Dinos quién eres para guardar tu progreso!",
+    yourName:"Tu Nombre",namePlaceholder:"Tu nombre...",
+    yourClass:"Tu Período de Clase",classPeriod:"ej. Período 2, Bloque A...",
+    letsGo:"¡Vamos! 🚀",
+    pickScene:"🌍 Elige Tu Escena",pickSceneHint:"¿Dónde quieres respirar hoy?",
+    back:"← Atrás",continue:"Continuar →",next:"Siguiente →",home:"← Inicio",
+    howFeeling:"💭 ¿Cómo te sientes ahora mismo?",
+    moodHint:"Elige una palabra o escribe la tuya — ¡no hay respuestas incorrectas!",
+    typeOwn:"O escribe tu propio sentimiento...",
+    chooseBreath:"🫁 Elige Tu Respiración",
+    stop:"⏹ Parar",roundComplete:"¡Ronda Completada!",
+    imDone:"Ya terminé",keepGoing:"Sigue adelante 💪",
+    youEarned:"¡Te ganaste algo!",nextCheckIn:"Siguiente → Revisión",
+    howNow:"🌈 ¿Cómo te sientes AHORA?",didShift:"¿Algo cambió?",
+    finish:"Terminar Sesión ✓",reflect:"Tómate un momento para reflexionar",
+    writeThoughts:"Escribe tus pensamientos aquí... (opcional)",
+    saveFinish:"Guardar y Terminar 💾",amazingWork:"¡Trabajo increíble!",
+    todayJourney:"Tu viaje de hoy",backHome:"Volver al Inicio 🏠",
+    breathJournal:"📓 Diario de Respiración",myCollection:"🏆 Mi Colección",
+    tapItems:"Toca los elementos para aprender qué hacen por ti 💙",
+    teacherPin:"Ingresa el PIN del maestro",
+    roster:"Lista",credit:"Crédito",syncMode:"Modo Sync",settings:"Ajustes",
+    allStudents:"Todos los estudiantes registrados",sessionCredit:"Sesiones por período",
+    exportCSV:"📥 Exportar CSV",syncDesc:"Lanzar una sesión de respiración sincronizada para toda la clase.",
+    launchSync:"🚀 ¡Lanzar Respiración Grupal!",settingsDesc:"Cambiar PIN y nombre de clase.",
+    schoolName:"Escuela / Nombre de Clase",save:"Guardar",
+    rounds:"Ronda","of":"de",
+    unlocksAt:"Se desbloquea en nivel",
+    noCollectionYet:"¡Completa sesiones para ganar artículos de bienestar! 🌿",
+    noJournal:"Aún no hay sesiones. ¡Empieza a respirar para llenar tu diario! 🌿",
+    lockText:"🔒 Se desbloquea en nivel",
+    tip0:"💡 ¡3 respiraciones lentas pueden calmar tu sistema nervioso!",
+    tip1:"🌟 Respirar lentamente le dice SEGURIDAD a tu cerebro.",
+    tip2:"🧠 Tu respiración es lo único que puedes controlar consciente Y automáticamente.",
+    tip3:"💪 Los Navy SEALs usan la respiración cuadrada antes de misiones de alto estrés.",
+    tip4:"🌊 La respiración alternada equilibra ambos hemisferios del cerebro.",
+    tip5:"🔥 La respiración de fuego despierta tu cuerpo mejor que el café — sin el bajón.",
+  },
+  fr:{
+    appName:"Respire ou Mme Howell le fera 😮‍💨",tagline:"Ton espace zen — pour de vrai ✨",
+    level:"Niveau",streak:"🔥 Série",sessions:"Séances",
+    startBreathing:"Commencer à Respirer",beginSession:"Commencer une séance",
+    journal:"Journal de Respiration",collection:"Ma Collection",leaderboard:"Classement",
+    seeRankings:"Voir les meilleurs",breathGuide:"📖 Guide de Respiration",
+    welcome:"Bienvenue ! 👋",registerHint:"Dis-nous qui tu es pour sauvegarder ta progression !",
+    yourName:"Ton Prénom",namePlaceholder:"Ton prénom...",
+    yourClass:"Ta Période de Classe",classPeriod:"ex. Période 2, Bloc A...",
+    letsGo:"C'est parti ! 🚀",
+    pickScene:"🌍 Choisis Ton Décor",pickSceneHint:"Où veux-tu respirer aujourd'hui ?",
+    back:"← Retour",continue:"Continuer →",next:"Suivant →",home:"← Accueil",
+    howFeeling:"💭 Comment tu te sens maintenant ?",
+    moodHint:"Choisis un mot ou écris le tien — pas de mauvaise réponse !",
+    typeOwn:"Ou écris ce que tu ressens...",
+    chooseBreath:"🫁 Choisis Ta Respiration",
+    stop:"⏹ Arrêter",roundComplete:"Tour Complété !",
+    imDone:"J'ai fini",keepGoing:"Continuons 💪",
+    youEarned:"Tu as gagné quelque chose !",nextCheckIn:"Suivant → Bilan",
+    howNow:"🌈 Comment tu te sens MAINTENANT ?",didShift:"Quelque chose a changé ?",
+    finish:"Terminer la séance ✓",reflect:"Prends un moment pour réfléchir",
+    writeThoughts:"Écris tes pensées ici... (optionnel)",
+    saveFinish:"Enregistrer et Terminer 💾",amazingWork:"Excellent travail !",
+    todayJourney:"Ton parcours d'aujourd'hui",backHome:"Retour à l'accueil 🏠",
+    breathJournal:"📓 Journal de Respiration",myCollection:"🏆 Ma Collection",
+    tapItems:"Touche les objets pour savoir ce qu'ils font pour toi 💙",
+    teacherPin:"Entrez le PIN enseignant",
+    roster:"Liste",credit:"Crédit",syncMode:"Mode Sync",settings:"Paramètres",
+    allStudents:"Tous les élèves inscrits",sessionCredit:"Séances par période",
+    exportCSV:"📥 Exporter CSV",syncDesc:"Lancer une séance de respiration synchronisée pour toute la classe.",
+    launchSync:"🚀 Lancer la Respiration de Classe !",settingsDesc:"Changer le PIN et le nom de la classe.",
+    schoolName:"École / Nom de Classe",save:"Enregistrer",
+    rounds:"Tour","of":"sur",
+    unlocksAt:"Se débloque au niveau",
+    noCollectionYet:"Complète des séances pour gagner des objets bien-être ! 🌿",
+    noJournal:"Pas encore de séances. Commence à respirer ! 🌿",
+    lockText:"🔒 Se débloque au niveau",
+    tip0:"💡 3 respirations lentes peuvent calmer ton système nerveux !",
+    tip1:"🌟 Respirer lentement signale la SÉCURITÉ à ton cerveau.",
+    tip2:"🧠 Respirer est la seule chose que tu contrôles consciemment ET automatiquement.",
+    tip3:"💪 Les Navy SEALs utilisent la respiration en boîte avant les missions.",
+    tip4:"🌊 La respiration alternée équilibre les deux hémisphères du cerveau.",
+    tip5:"🔥 La respiration de feu réveille le corps mieux que le café — sans la déprime.",
+  }
+};
+let lang = 'en';
+function t(key){return (T[lang]&&T[lang][key])||T.en[key]||key;}
+function setLang(l){
+  lang=l;
+  // Sync all lang buttons everywhere
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===l.toUpperCase()));
+  document.querySelectorAll('[data-t]').forEach(el=>{const k=el.getAttribute('data-t');if(T[l]&&T[l][k])el.textContent=T[l][k];});
+  document.querySelectorAll('[data-t-ph]').forEach(el=>{const k=el.getAttribute('data-t-ph');if(T[l]&&T[l][k])el.placeholder=T[l][k];});
+  buildMoodChips('mood-before-chips');
+  buildMoodChips('mood-after-chips');
+  buildBreathList();
+  buildGuide();
+  updateHome();
+}
+
+// ============================================================
+// DATA
+// ============================================================
+const MOODS = [
+  {emoji:'😴',en:'Tired',es:'Cansado/a',fr:'Fatigué(e)'},
+  {emoji:'😤',en:'Frustrated',es:'Frustrado/a',fr:'Frustré(e)'},
+  {emoji:'😰',en:'Anxious',es:'Ansioso/a',fr:'Anxieux(se)'},
+  {emoji:'😢',en:'Sad',es:'Triste',fr:'Triste'},
+  {emoji:'😐',en:'Meh',es:'Así así',fr:'Bof'},
+  {emoji:'😊',en:'Okay',es:'Bien',fr:'Bien'},
+  {emoji:'😃',en:'Happy',es:'Feliz',fr:'Heureux(se)'},
+  {emoji:'🤩',en:'Excited',es:'Emocionado/a',fr:'Excité(e)'},
+  {emoji:'😡',en:'Angry',es:'Enojado/a',fr:'En colère'},
+  {emoji:'🤔',en:'Confused',es:'Confundido/a',fr:'Confus(e)'},
+  {emoji:'😌',en:'Calm',es:'Tranquilo/a',fr:'Calme'},
+  {emoji:'💪',en:'Energized',es:'Energizado/a',fr:'Dynamisé(e)'},
+  {emoji:'😶',en:'Numb',es:'Entumecido/a',fr:'Engourdi(e)'},
+  {emoji:'🥺',en:'Overwhelmed',es:'Agobiado/a',fr:'Débordé(e)'},
+];
+
+const BREATHS = [
+  {
+    id:'belly',unlockLevel:1,
+    en:{name:'Belly Breath',short:'Fill belly in, empty out',
+      desc:'The foundation of all breathing. Your belly rises like a balloon as you breathe in through your nose, then gently deflates as you breathe out. Press your belly button back toward your spine to empty fully.'},
+    es:{name:'Respiración Abdominal',short:'Llena el abdomen, vacíalo',
+      desc:'La base de toda respiración. Tu barriga sube como un globo al inhalar por la nariz, y baja suavemente al exhalar. Empuja el ombligo hacia la columna para vaciar completamente.'},
+    fr:{name:'Respiration Abdominale',short:'Gonfle le ventre en inspirant, dégonfle en expirant',
+      desc:"La base de toute respiration. Ton ventre se gonfle comme un ballon en inspirant par le nez, puis se dégonfle doucement en expirant. Rentre le nombril vers la colonne pour vider complètement."},
+    emoji:'🫁',badge:'Starter',color:'#7c3aed',
+    phases:[
+      {en:'Breathe In 👃',es:'Inhala 👃',fr:'Inspire 👃',hint:{en:'Belly softly rises…',es:'La barriga sube suave…',fr:'Ventre qui se gonfle doucement…'},dur:3,dir:1},
+      {en:'Breathe Out 💨',es:'Exhala 💨',fr:'Expire 💨',hint:{en:'Let it go… easy',es:'Suéltalo… suave',fr:'Laisse partir… doucement'},dur:4,dir:-1},
+    ]
+  },
+  {
+    id:'box',unlockLevel:4,
+    en:{name:'Box Breathing',short:'4 in, 4 hold, 4 out, 4 hold',
+      desc:'Used by Navy SEALs and athletes! Breathe in for 4, hold for 4, out for 4, hold for 4. Each side of the box is one step. Perfect for calming down fast when everything feels like too much.'},
+    es:{name:'Respiración en Caja',short:'4 adentro, 4 sostener, 4 afuera, 4 sostener',
+      desc:'¡Usada por los Navy SEALs! Inhala en 4, sostén en 4, exhala en 4, sostén en 4. Cada lado de la caja es un paso. Perfecta para calmarse rápido.'},
+    fr:{name:'Respiration en Boîte',short:'4 inspire, 4 retiens, 4 expire, 4 retiens',
+      desc:"Utilisée par les Navy SEALs ! Inspire en 4 temps, retiens 4 temps, expire en 4 temps, retiens 4 temps. Parfait pour se calmer rapidement."},
+    emoji:'⬜',badge:'Level 4',color:'#0ea5e9',
+    phases:[
+      {en:'Breathe In 👃',es:'Inhala 👃',fr:'Inspire 👃',hint:{en:'1… 2… 3… 4… slow',es:'1… 2… 3… 4… despacio',fr:'1… 2… 3… 4… lentement'},dur:5,dir:1},
+      {en:'Hold 🤫',es:'Sostén 🤫',fr:'Retiens 🤫',hint:{en:'Still… hold that calm',es:'Quieto… sostén esa calma',fr:'Immobile… tiens ce calme'},dur:5,dir:0},
+      {en:'Breathe Out 💨',es:'Exhala 💨',fr:'Expire 💨',hint:{en:'Slow and steady… no rush',es:'Suave y despacio… sin prisa',fr:'Doucement… sans te presser'},dur:5,dir:-1},
+      {en:'Hold 🤫',es:'Sostén 🤫',fr:'Retiens 🤫',hint:{en:'Empty and at peace…',es:'Vacío y en paz…',fr:'Vide et paisible…'},dur:5,dir:0},
+    ]
+  },
+  {
+    id:'three',unlockLevel:7,
+    en:{name:'Three-Part Breath',short:'Fill belly, ribs, chest — empty in reverse',
+      desc:'Pour water into a cup from the bottom up. Fill your belly first, then expand your ribs sideways, then lift your chest. Breathe out in reverse — chest, ribs, belly. Three movements, one breath.'},
+    es:{name:'Respiración en Tres Partes',short:'Llena barriga, costillas, pecho — vacía al revés',
+      desc:'Como llenar una taza de agua desde abajo. Llena primero la barriga, luego expande las costillas, luego levanta el pecho. Exhala al revés: pecho, costillas, barriga.'},
+    fr:{name:'Respiration en Trois Parties',short:'Ventre, côtes, poitrine — vider à l\'envers',
+      desc:"Comme remplir un verre d'eau par le bas. Gonfle d'abord le ventre, puis les côtes, puis la poitrine. Expire dans l'ordre inverse."},
+    emoji:'🔢',badge:'Level 7',color:'#059669',
+    phases:[
+      {en:'Fill Belly 🫃',es:'Llena la barriga 🫃',fr:'Gonfle le ventre 🫃',hint:{en:'Slow… belly expands first',es:'Despacio… la barriga primero',fr:'Doucement… le ventre d\'abord'},dur:4,dir:1},
+      {en:'Expand Ribs 🪗',es:'Expande las costillas 🪗',fr:'Gonfle les côtes 🪗',hint:{en:'Feel your sides slowly widen',es:'Siente los lados ensancharse',fr:'Sens tes côtés s\'élargir'},dur:4,dir:1},
+      {en:'Lift Chest 🫀',es:'Levanta el pecho 🫀',fr:'Lève la poitrine 🫀',hint:{en:'Top of lungs filling up…',es:'La parte alta de los pulmones…',fr:'Haut des poumons qui se remplit…'},dur:4,dir:1},
+      {en:'Empty Chest 👇',es:'Vacía el pecho 👇',fr:'Vide la poitrine 👇',hint:{en:'Release from top first',es:'Suelta desde arriba primero',fr:'Relâche par le haut'},dur:4,dir:-1},
+      {en:'Soften Ribs 👇',es:'Relaja las costillas 👇',fr:'Relâche les côtes 👇',hint:{en:'Ribs come back in',es:'Las costillas vuelven',fr:'Les côtes rentrent'},dur:4,dir:-1},
+      {en:'Empty Belly 👇',es:'Vacía la barriga 👇',fr:'Vide le ventre 👇',hint:{en:'Belly button to spine',es:'Ombligo hacia la columna',fr:'Nombril vers la colonne'},dur:4,dir:-1},
+    ]
+  },
+  {
+    id:'fire',unlockLevel:10,
+    en:{name:'Fire Breath',short:'Quick pumping exhales through the nose',
+      desc:"Energizing breath that wakes up your entire body! Quick, forceful exhales through the nose while the inhale happens naturally. Like a bellows pumping air into a fire. Don't do this if you feel dizzy — that just means you're breathing faster than your body needs."},
+    es:{name:'Respiración de Fuego',short:'Exhalaciones rápidas y fuertes por la nariz',
+      desc:'¡Respiración energizante que despierta todo tu cuerpo! Exhalaciones cortas y fuertes por la nariz mientras la inhalación ocurre naturalmente. Como un fuelle soplando aire al fuego.'},
+    fr:{name:'Respiration de Feu',short:'Expirations rapides et fortes par le nez',
+      desc:"Respiration énergisante qui réveille tout le corps ! Expirations courtes et fortes par le nez, l'inspiration se fait naturellement. Comme un soufflet qui attise le feu."},
+    emoji:'🔥',badge:'Level 10',color:'#dc2626',
+    phases:[
+      {en:'Pump Out! 💥',es:'¡Bombea afuera! 💥',fr:'Pompe ! 💥',hint:{en:'Short burst out the nose',es:'Ráfaga corta por la nariz',fr:'Courte rafale par le nez'},dur:0.5,dir:-1},
+      {en:'In 😮‍💨',es:'Adentro 😮‍💨',fr:'Rentre 😮‍💨',hint:{en:'Let breath rush back',es:'Deja que el aire vuelva',fr:'Laisse l\'air revenir'},dur:0.5,dir:1},
+      {en:'Pump! 💥',es:'¡Bombea! 💥',fr:'Pompe ! 💥',hint:{en:'Again!',es:'¡Otra vez!',fr:'Encore !'},dur:0.5,dir:-1},
+      {en:'In 😮‍💨',es:'Adentro 😮‍💨',fr:'Rentre 😮‍💨',hint:{en:'And in...',es:'Y adentro...',fr:'Et rentre...'},dur:0.5,dir:1},
+      {en:'Final Pump! 💥',es:'¡Bomba final! 💥',fr:'Dernière pompe ! 💥',hint:{en:'Last burst!',es:'¡Última ráfaga!',fr:'Dernière rafale !'},dur:0.5,dir:-1},
+      {en:'Big Breath In 🌊',es:'Gran inhalación 🌊',fr:'Grande inspiration 🌊',hint:{en:'Full breath now',es:'Respiración completa',fr:'Grande respiration complète'},dur:3,dir:1},
+      {en:'Slow Release 💨',es:'Suelta lento 💨',fr:'Relâche lentement 💨',hint:{en:'Feel the tingle!',es:'¡Siente el hormigueo!',fr:'Sens le picotement !'},dur:4,dir:-1},
+    ]
+  },
+  {
+    id:'alternate',unlockLevel:14,
+    en:{name:'Alternate Nostril',short:'Close one nostril, breathe in; switch; out',
+      desc:'A 5,000-year-old yoga technique. Scientists say it balances both halves of your brain. Close your right nostril with your thumb, breathe in through the left. Close both, then open right, breathe out. Repeat on the other side.'},
+    es:{name:'Respiración Alternada',short:'Cierra una fosa nasal, inhala; cambia; exhala',
+      desc:'Una técnica de yoga de 5,000 años. Los científicos dicen que equilibra ambos hemisferios del cerebro. Cierra la fosa derecha con el pulgar, inhala por la izquierda. Cambia y exhala por la derecha.'},
+    fr:{name:'Respiration Alternée',short:'Ferme une narine, inspire ; change ; expire',
+      desc:"Une technique de yoga vieille de 5 000 ans. Les scientifiques disent qu'elle équilibre les deux hémisphères du cerveau. Ferme la narine droite avec le pouce, inspire par la gauche. Change et expire par la droite."},
+    emoji:'👃',badge:'Level 14',color:'#d97706',
+    phases:[
+      {en:'Close Right, In Left 👉',es:'Cierra derecha, inhala izquierda 👉',fr:'Ferme droite, inspire gauche 👉',hint:{en:'Thumb on right nostril… slow',es:'Pulgar en fosa derecha… despacio',fr:'Pouce sur narine droite… lentement'},dur:5,dir:1},
+      {en:'Hold & Switch 🤝',es:'Sostén y cambia 🤝',fr:'Retiens et change 🤝',hint:{en:'Close both nostrils gently',es:'Cierra ambas fosas suavemente',fr:'Ferme les deux narines doucement'},dur:3,dir:0},
+      {en:'Out Through Right 👃',es:'Exhala por la derecha 👃',fr:'Expire par la droite 👃',hint:{en:'Slow release through right side',es:'Suelta lento por la derecha',fr:'Relâche lentement par la droite'},dur:5,dir:-1},
+      {en:'In Through Right 👃',es:'Inhala por la derecha 👃',fr:'Inspire par la droite 👃',hint:{en:'Right nostril only… take your time',es:'Solo fosa derecha… despacio',fr:'Narine droite seulement… lentement'},dur:5,dir:1},
+      {en:'Hold & Switch 🤝',es:'Sostén y cambia 🤝',fr:'Retiens et change 🤝',hint:{en:'Close both, open left side',es:'Cierra ambas, abre izquierda',fr:'Ferme les deux, ouvre gauche'},dur:3,dir:0},
+      {en:'Out Through Left 👃',es:'Exhala por la izquierda 👃',fr:'Expire par la gauche 👃',hint:{en:'That\'s one full cycle!',es:'¡Eso es un ciclo completo!',fr:'Voilà un cycle complet !'},dur:5,dir:-1},
+    ]
+  },
+];
+
+// ============================================================
+// REWARDS — Collectible wellness items students earn after completing a session
+// 💡 TO ADD MORE REWARDS: Copy any block below and add it to this array.
+//    Each reward needs: emoji, and en/es/fr with {name, say}
+//    The 'say' field is the wellness fact shown when they tap the item in their collection.
+//    Aim for rewards that feel real and tangible, not abstract.
+// ============================================================
+const REWARDS = [
+  {emoji:'🛁',en:{name:'Cozy Bubble Bath',say:"Water soothes your nervous system. Even a warm shower can reset your mood — science calls it 'hydrotherapy'!"},
+    es:{name:'Baño de Burbujas',say:"El agua calma tu sistema nervioso. Hasta una ducha caliente puede resetear tu estado de ánimo — ¡la ciencia lo llama 'hidroterapia'!"},
+    fr:{name:'Bain de Mousse',say:"L'eau apaise ton système nerveux. Même une douche chaude peut réinitialiser ton humeur !"}},
+  {emoji:'🍵',en:{name:'Chamomile Tea',say:"Chamomile has been used for 5,000 years to calm the mind. Sipping something warm tells your brain you're safe. 🫖"},
+    es:{name:'Té de Manzanilla',say:"La manzanilla se ha usado por 5,000 años para calmar la mente. Tomar algo caliente le dice a tu cerebro que estás seguro/a. 🫖"},
+    fr:{name:'Thé à la Camomille',say:"La camomille est utilisée depuis 5 000 ans pour calmer l'esprit. Boire quelque chose de chaud dit à ton cerveau que tu es en sécurité. 🫖"}},
+  {emoji:'🪴',en:{name:'Little Plant Buddy',say:"Plants remind us that growth takes time and patience — just like learning to manage our feelings! 🌱"},
+    es:{name:'Plantita',say:"Las plantas nos recuerdan que crecer toma tiempo y paciencia — ¡igual que aprender a manejar nuestros sentimientos! 🌱"},
+    fr:{name:'Petite Plante Amie',say:"Les plantes nous rappellent que grandir prend du temps et de la patience ! 🌱"}},
+  {emoji:'🌙',en:{name:'Moon Lamp',say:"Soft warm light signals bedtime to your brain and helps your body wind down. Your environment shapes how you feel!"},
+    es:{name:'Lámpara Luna',say:"La luz suave y cálida le indica a tu cerebro que es hora de dormir y ayuda al cuerpo a relajarse."},
+    fr:{name:'Lampe Lune',say:"Une lumière douce et chaude signale l'heure du coucher à ton cerveau. Ton environnement façonne ta façon de te sentir !"}},
+  {emoji:'📔',en:{name:'Cozy Journal',say:"Writing down your feelings is like putting them on a shelf so they don't take up space in your head. 📝"},
+    es:{name:'Diario Acogedor',say:"Escribir tus sentimientos es como ponerlos en un estante para que no ocupen espacio en tu cabeza. 📝"},
+    fr:{name:'Journal Douillet',say:"Écrire tes sentiments, c'est comme les mettre sur une étagère pour qu'ils ne prennent plus de place dans ta tête. 📝"}},
+  {emoji:'🎧',en:{name:'Noise-Cancelling Headphones',say:"Creating quiet around you helps your brain stop scanning for danger. Silence is a superpower. 🎵"},
+    es:{name:'Auriculares Antiruido',say:"Crear silencio a tu alrededor ayuda a tu cerebro a dejar de buscar peligros. ¡El silencio es un superpoder! 🎵"},
+    fr:{name:'Casque Anti-bruit',say:"Créer du silence autour de toi aide ton cerveau à arrêter de chercher des dangers. Le silence est un superpouvoir. 🎵"}},
+  {emoji:'🧸',en:{name:'Comfort Stuffed Animal',say:"Having something soft to hold activates your parasympathetic nervous system — the 'rest and relax' mode. Science! 💙"},
+    es:{name:'Peluche de Confort',say:"Tener algo suave que abrazar activa tu sistema nervioso parasimpático — el modo 'descanso y relajación'. ¡Ciencia! 💙"},
+    fr:{name:'Peluche Réconfortante',say:"Tenir quelque chose de doux active ton système nerveux parasympathique — le mode 'repos et détente'. La science ! 💙"}},
+  {emoji:'💆',en:{name:'Head Massage',say:"Scalp massage releases serotonin and dopamine — your brain's own feel-good chemicals. No spa needed! 🙌"},
+    es:{name:'Masaje de Cabeza',say:"El masaje en el cuero cabelludo libera serotonina y dopamina — ¡las sustancias químicas del bienestar de tu propio cerebro! 🙌"},
+    fr:{name:'Massage de Tête',say:"Le massage du cuir chevelu libère de la sérotonine et de la dopamine — les substances chimiques du bien-être de ton propre cerveau ! 🙌"}},
+  {emoji:'🕯️',en:{name:'Lavender Candle',say:"Lavender scent signals safety to your brain and actually slows your heart rate. Smell is more powerful than you think! 🌸"},
+    es:{name:'Vela de Lavanda',say:"El aroma de lavanda le indica seguridad a tu cerebro y ralentiza tu ritmo cardíaco. ¡El olfato es más poderoso de lo que crees! 🌸"},
+    fr:{name:'Bougie Lavande',say:"Le parfum de lavande signale la sécurité à ton cerveau et ralentit ton rythme cardiaque. L'odorat est plus puissant qu'on ne le croit ! 🌸"}},
+  {emoji:'🧊',en:{name:'Cool Splash',say:"Splashing cold water on your face activates the 'dive reflex' — your body's emergency calm-down button! Used by therapists worldwide."},
+    es:{name:'Salpicadura Fresca',say:"Salpicar agua fría en la cara activa el 'reflejo de buceo' — ¡el botón de emergencia de tu cuerpo para calmarse!"},
+    fr:{name:'Eau Froide',say:"Se asperger le visage d'eau froide active le 'réflexe de plongée' — le bouton d'urgence de ton corps pour se calmer !"}},
+  {emoji:'🛏️',en:{name:'Weighted Blanket',say:"The gentle pressure of a weighted blanket mimics a hug, releasing oxytocin — your body's feel-good hormone. 🫂"},
+    es:{name:'Manta con Peso',say:"La presión suave de una manta pesada imita un abrazo, liberando oxitocina — la hormona del bienestar de tu cuerpo. 🫂"},
+    fr:{name:'Couverture Lestée',say:"La douce pression d'une couverture lestée imite un câlin, libérant de l'ocytocine — l'hormone du bien-être de ton corps. 🫂"}},
+  {emoji:'💧',en:{name:'Glass of Water',say:"Even mild dehydration raises anxiety levels. Your brain is 80% water — keep it happy! Stay hydrated, stay calm. 💧"},
+    es:{name:'Vaso de Agua',say:"Incluso la deshidratación leve aumenta los niveles de ansiedad. ¡Tu cerebro es 80% agua — mantenlo feliz! 💧"},
+    fr:{name:"Verre d'eau",say:"Même une légère déshydratation augmente l'anxiété. Ton cerveau est composé à 80% d'eau — garde-le heureux ! 💧"}},
+  {emoji:'🪨',en:{name:'Gratitude Stone',say:"Rolling a smooth stone in your fingers while thinking of 3 good things literally rewires your brain over time. ✨"},
+    es:{name:'Piedra de Gratitud',say:"Rodar una piedra suave entre los dedos mientras piensas en 3 cosas buenas literalmente recablea tu cerebro con el tiempo. ✨"},
+    fr:{name:'Pierre de Gratitude',say:"Rouler une pierre lisse entre les doigts en pensant à 3 bonnes choses recâble littéralement ton cerveau au fil du temps. ✨"}},
+  {emoji:'🧘',en:{name:'Meditation Cushion',say:"Sitting comfortably and upright helps your brain enter a focused, calm state. Posture affects your mood more than you know!"},
+    es:{name:'Cojín de Meditación',say:"Sentarse cómodo y erguido ayuda a tu cerebro a entrar en un estado de calma y concentración."},
+    fr:{name:'Coussin de Méditation',say:"Être assis confortablement et droit aide ton cerveau à entrer dans un état de calme et de concentration."}},
+  {emoji:'🦋',en:{name:'Butterfly Hug Reminder',say:"Cross your arms and tap alternate shoulders slowly. This bilateral tapping is used in trauma therapy — it helps your brain process and settle. 🫂"},
+    es:{name:'Recordatorio Abrazo Mariposa',say:"Cruza los brazos y toca los hombros alternadamente. Este tapping bilateral se usa en terapia del trauma — ayuda al cerebro a procesar. 🫂"},
+    fr:{name:'Rappel Câlin Papillon',say:"Croise les bras et tape alternativement les épaules. Ce tapotement bilatéral est utilisé en thérapie du trauma pour aider le cerveau. 🫂"}},
+  // ── Interactive sound rewards ──
+  {emoji:'🐦',en:{name:'Birdsong Break',say:"Scientists found birdsong reduces anxiety within minutes — your brain reads it as a signal the environment is SAFE. Close your eyes. Imagine you're outside. 🌿",sound:'birdsong'},
+    es:{name:'Pausa de Pájaros',say:"Los científicos descubrieron que el canto de pájaros reduce la ansiedad — tu cerebro lo lee como una señal de seguridad. Cierra los ojos. 🌿",sound:'birdsong'},
+    fr:{name:"Pause Chants d'Oiseaux",say:"Le chant des oiseaux réduit l'anxiété — ton cerveau y voit un signal de sécurité. Ferme les yeux. 🌿",sound:'birdsong'}},
+  {emoji:'🔔',en:{name:'432Hz Healing Tone',say:"432Hz is tuned to the natural frequency of the universe — it's different from standard music tuning and many people find it deeply calming. Let it wash over you. ✨",sound:'432hz'},
+    es:{name:'Tono Sanador 432Hz',say:"432Hz está afinado a la frecuencia natural del universo. Es diferente a la música estándar y muchos lo encuentran profundamente calmante. Déjalo envolverte. ✨",sound:'432hz'},
+    fr:{name:'Ton Guérisseur 432Hz',say:"432Hz est accordé à la fréquence naturelle de l'univers — beaucoup trouvent ça profondément apaisant. Laisse-le t'envelopper. ✨",sound:'432hz'}},
+  {emoji:'🍵',en:{name:'Cup of Tea Ritual',say:"The slow ritual of making and sipping something warm activates your parasympathetic nervous system. Chamomile, mint, green — any warm drink works. You earned a moment of warmth. ☕"},
+    es:{name:'Ritual de Té',say:"El ritual lento de preparar y tomar algo caliente activa tu sistema nervioso parasimpático. Manzanilla, menta, verde — cualquier bebida caliente funciona. ☕"},
+    fr:{name:'Rituel Thé',say:"Le rituel de préparer et de siroter quelque chose de chaud active ton système nerveux parasympathique. Camomille, menthe, vert — toute boisson chaude fonctionne. ☕"}},
+  {emoji:'🧦',en:{name:'Fuzzy Socks',say:"Keeping your feet warm actually improves mood — warmth signals safety to your nervous system. Wiggle your toes. Notice the comfort. 🧡"},
+    es:{name:'Calcetines Suaves',say:"Mantener los pies calientes mejora el estado de ánimo — el calor le señala seguridad al sistema nervioso. Mueve los dedos de los pies. 🧡"},
+    fr:{name:'Chaussettes Douces',say:"Garder les pieds au chaud améliore l'humeur — la chaleur signale la sécurité à ton système nerveux. Remue les orteils. 🧡"}},
+  {emoji:'🎨',en:{name:'Art Therapy Card',say:"45 minutes of creative activity lowers cortisol by up to 75% — and you don't have to be good at it. Doodle, color, write, anything. The mess IS the therapy. 🖍️"},
+    es:{name:'Tarjeta de Arte Terapia',say:"45 minutos de actividad creativa reduce el cortisol hasta un 75% — y no tienes que ser bueno/a. Dibuja, colorea, escribe. El desorden ES la terapia. 🖍️"},
+    fr:{name:'Carte Art-Thérapie',say:"45 minutes d'activité créative réduit le cortisol jusqu'à 75% — et tu n'as pas besoin d'être doué. Gribouille, colorie, écris. Le désordre EST la thérapie. 🖍️"}},
+  // ⭐ RARE REWARD — 5% drop chance handled in finishAllRounds()
+  {emoji:'✅',rare:true,en:{name:"Mrs. Howell's Approval",say:"Mrs. Howell saw you doing the work. She's not saying anything but she noticed. You showed up for yourself today and that matters more than you know. 👀"},
+    es:{name:"La Aprobación de la Sra. Howell",say:"La Sra. Howell te vio haciendo el trabajo. No dice nada, pero lo notó. Te presentaste por ti mismo/a hoy, y eso importa más de lo que crees. 👀"},
+    fr:{name:"L'Approbation de Mme Howell",say:"Mme Howell t'a vu faire le travail. Elle ne dit rien, mais elle a remarqué. Tu t'es montré(e) aujourd'hui et ça compte plus que tu ne le sais. 👀"}},
+  // ➕ ADD YOUR OWN REWARDS HERE — copy any block above!
+  // Mark rare ones with rare:true for 5% drop rate
+];
+
+// ============================================================
+// TASKS — Mindfulness activities students do after completing a session (40% chance)
+// 💡 TO ADD MORE TASKS: Copy any block below and paste it before the closing ];
+//    Each task needs: emoji, and en/es/fr with {name, desc, refl}
+//    - desc: what they actually DO (keep it doable at a school desk!)
+//    - refl: a reflection question about what they just experienced
+//    Ideas: progressive muscle relaxation, gratitude list, body scan, doodling, humming
+// ============================================================
+const TASKS = [
+  {
+    emoji:'🙆',
+    en:{name:'Shoulder Roll Release',desc:'Roll your shoulders backward 5 times, then forward 5 times. Really take your time.',refl:'Where in your body were you holding tension? Did rolling your shoulders change anything?'},
+    es:{name:'Rodado de Hombros',desc:'Rueda los hombros hacia atrás 5 veces, luego hacia adelante 5 veces. Tómate tu tiempo.',refl:'¿Dónde en tu cuerpo estabas sosteniendo tensión? ¿Cambió algo al mover los hombros?'},
+    fr:{name:'Roulement d\'Épaules',desc:'Roulez vos épaules vers l\'arrière 5 fois, puis vers l\'avant 5 fois. Prenez votre temps.',refl:'Où dans ton corps tenais-tu la tension ? Rouler les épaules a-t-il changé quelque chose ?'},
+  },
+  {
+    emoji:'🌊',
+    en:{name:'5-4-3-2-1 Grounding',desc:'Without moving: name 5 things you CAN SEE, 4 you can TOUCH, 3 you can HEAR, 2 you can SMELL, 1 you can TASTE.',refl:'Did focusing on your senses pull you more into the present moment?'},
+    es:{name:'Anclaje 5-4-3-2-1',desc:'Sin moverte: nombra 5 cosas que PUEDES VER, 4 que puedes TOCAR, 3 que puedes OÍR, 2 que puedes OLER, 1 que puedes SABOREAR.',refl:'¿Enfocarte en tus sentidos te trajo más al momento presente?'},
+    fr:{name:'Ancrage 5-4-3-2-1',desc:'Sans bouger : nommez 5 choses que vous VOYEZ, 4 que vous TOUCHEZ, 3 que vous ENTENDEZ, 2 que vous SENTEZ, 1 que vous GOÛTEZ.',refl:'Se concentrer sur tes sens t\'a-t-il amené plus dans le moment présent ?'},
+  },
+  {
+    emoji:'👂',
+    en:{name:'Sound Safari',desc:'Close your eyes. What\'s the FARTHEST sound you can hear? What\'s the CLOSEST? Find the sound that\'s furthest away and track it for 30 seconds.',refl:'What did you discover? Did listening outward change what was happening inward?'},
+    es:{name:'Safari de Sonidos',desc:'Cierra los ojos. ¿Cuál es el sonido MÁS LEJANO que puedes escuchar? ¿Cuál es el MÁS CERCANO? Sigue el sonido más lejano por 30 segundos.',refl:'¿Qué descubriste? ¿Escuchar hacia afuera cambió lo que pasaba adentro?'},
+    fr:{name:'Safari Sonore',desc:'Ferme les yeux. Quel est le son LE PLUS LOIN que tu entends ? Le plus PROCHE ? Suis le son le plus éloigné pendant 30 secondes.',refl:'Qu\'as-tu découvert ? Écouter vers l\'extérieur a-t-il changé ce qui se passait intérieurement ?'},
+  },
+  {
+    emoji:'💪',
+    en:{name:'Shake It Out',desc:'Shake your hands like you just washed them with no towels. Then arms. Then wiggle feet. Be silly — nobody is watching.',refl:'Why might shaking help release stress? Did it work for you?'},
+    es:{name:'Sacúdete',desc:'Sacude las manos como si las acabaras de lavar sin toalla. Luego los brazos. Luego mueve los pies. Sé tonto/a — nadie está mirando.',refl:'¿Por qué sacudirse puede ayudar a liberar el estrés? ¿Funcionó contigo?'},
+    fr:{name:'Shake It Out',desc:'Secoue tes mains comme si tu venais de les laver sans serviette. Puis les bras. Puis gigote les pieds. Sois ridicule — personne ne regarde.',refl:'Pourquoi se secouer peut-il libérer le stress ? Ça a marché pour toi ?'},
+  },
+  {
+    emoji:'😊',
+    en:{name:'Secret Smile',desc:'Close your eyes and make the tiniest smile — so small nobody can see it. Hold for 30 seconds. Notice what happens inside.',refl:'Did a tiny smile actually change how you felt? Why might that be?'},
+    es:{name:'Sonrisa Secreta',desc:'Cierra los ojos y haz la sonrisa más pequeña — tan pequeña que nadie pueda verla. Mantenla 30 segundos. Observa qué pasa dentro.',refl:'¿Una pequeña sonrisa realmente cambió cómo te sentiste? ¿Por qué crees que es así?'},
+    fr:{name:'Sourire Secret',desc:'Ferme les yeux et fais le plus petit sourire possible — si petit que personne ne peut le voir. Tiens-le 30 secondes. Remarque ce qui se passe à l\'intérieur.',refl:'Un tout petit sourire a-t-il vraiment changé ce que tu ressentais ? Pourquoi ?'},
+  },
+  {
+    emoji:'🖐️',
+    en:{name:'Butterfly Hug',desc:'Cross your arms on your chest, each hand on opposite shoulder. Tap alternately — left-right-left-right — slowly for 30 seconds.',refl:'This is actually used in trauma therapy. How did it feel? Strange? Cozy? Calming?'},
+    es:{name:'Abrazo Mariposa',desc:'Cruza los brazos sobre el pecho, cada mano en el hombro opuesto. Golpea alternadamente — izquierda-derecha — lentamente 30 segundos.',refl:'Esto se usa en la terapia del trauma. ¿Cómo se sintió? ¿Raro? ¿Acogedor? ¿Calmante?'},
+    fr:{name:'Câlin Papillon',desc:'Croise tes bras sur ta poitrine, chaque main sur l\'épaule opposée. Tape alternativement — gauche-droite — lentement pendant 30 secondes.',refl:'C\'est utilisé dans la thérapie du trauma. Comment c\'était ? Bizarre ? Réconfortant ? Calmant ?'},
+  },
+  {
+    emoji:'👀',
+    en:{name:'Soft Gaze',desc:'Let your eyes go slightly out of focus — soften your gaze so everything looks a little blurry. Hold 30 seconds. Notice your jaw and shoulders.',refl:'What happened to your body when you stopped focusing hard? Where do you usually carry tension?'},
+    es:{name:'Mirada Suave',desc:'Deja que tus ojos pierdan un poco el foco — suaviza la mirada para que todo parezca un poco borroso. 30 segundos. Nota tu mandíbula y hombros.',refl:'¿Qué pasó con tu cuerpo cuando dejaste de enfocarte? ¿Dónde sueles llevar la tensión?'},
+    fr:{name:'Regard Doux',desc:'Laisse tes yeux légèrement se déconcentrer — adoucis ton regard pour que tout paraisse un peu flou. 30 secondes. Remarque ta mâchoire et tes épaules.',refl:'Qu\'est-il arrivé à ton corps quand tu as arrêté de te concentrer ? Où portes-tu habituellement ta tension ?'},
+  },
+  // ── Room-Based Grounding Tasks ──
+  {
+    emoji:'🔵',
+    en:{name:"Color Hunt",desc:"Look around the room slowly — find 3 blue things. Really look. Take your time. Then find 1 thing that's yellow.",refl:"What did you notice? Did you spot anything you've never really looked at before?"},
+    es:{name:'Caza de Colores',desc:'Mira alrededor del salón lentamente — encuentra 3 cosas azules. Mira de verdad. Tómate tu tiempo. Luego encuentra 1 cosa amarilla.',refl:'¿Qué notaste? ¿Viste algo que nunca habías mirado de verdad antes?'},
+    fr:{name:"Chasse aux Couleurs",desc:"Regarde autour de la salle lentement — trouve 3 choses bleues. Regarde vraiment. Prends ton temps. Puis trouve 1 chose jaune.",refl:"Qu'as-tu remarqué ? As-tu vu quelque chose que tu n'avais jamais vraiment regardé avant ?"},
+  },
+  {
+    emoji:'⭕',
+    en:{name:"Shape Safari",desc:"Without leaving your seat — find something perfectly circular in the room. Then something with the sharpest edge you can see. Then something that looks soft.",refl:"What shapes did you find? What shape describes how you feel right now, and why?"},
+    es:{name:'Safari de Formas',desc:'Sin levantarte — encuentra algo perfectamente circular. Luego algo con el borde más afilado que puedas ver. Luego algo que se vea suave.',refl:'¿Qué formas encontraste? ¿Qué forma describe cómo te sientes ahora mismo?'},
+    fr:{name:'Safari des Formes',desc:'Sans te lever — trouve quelque chose de parfaitement circulaire. Puis quelque chose avec le bord le plus vif. Puis quelque chose qui semble doux.',refl:'Quelles formes as-tu trouvées ? Quelle forme décrit ce que tu ressens maintenant ?'},
+  },
+  {
+    emoji:'✋',
+    en:{name:"Texture Check",desc:"Reach out and touch 3 different surfaces near you without looking first. Your desk, your sleeve, the back of your hand. Really notice each one for 5 seconds.",refl:"Which texture felt most calming or interesting? What do you think that says about you?"},
+    es:{name:'Chequeo de Texturas',desc:'Toca 3 superficies diferentes cerca de ti sin mirar primero. Tu escritorio, tu manga, el dorso de tu mano. Nota cada una por 5 segundos.',refl:'¿Qué textura te pareció más calmante o interesante? ¿Qué crees que dice eso de ti?'},
+    fr:{name:"Vérification des Textures",desc:"Touche 3 surfaces différentes près de toi sans regarder d'abord. Ton bureau, ta manche, le dos de ta main. Remarque vraiment chacune 5 secondes.",refl:"Quelle texture était la plus apaisante ? Qu'est-ce que ça dit de toi ?"},
+  },
+  {
+    emoji:'👁️',
+    en:{name:"Find Something Beautiful",desc:"Scan the room slowly. Find ONE thing you find genuinely beautiful or interesting that you usually don't notice. Stare at it for 20 full seconds.",refl:"What did you pick? Why that thing over everything else? What does it say about what you value?"},
+    es:{name:'Encuentra Algo Hermoso',desc:'Escanea el salón lentamente. Encuentra UNA cosa que genuinamente encuentres hermosa o interesante que normalmente no notas. Mírala 20 segundos completos.',refl:'¿Qué elegiste? ¿Por qué eso sobre todo lo demás? ¿Qué dice sobre lo que valoras?'},
+    fr:{name:"Trouve Quelque Chose de Beau",desc:"Scan lentement la salle. Trouve UNE chose que tu trouves vraiment belle ou intéressante que tu ne remarques pas d'habitude. Fixe-la 20 secondes complètes.",refl:"Qu'as-tu choisi ? Pourquoi ça plutôt qu'autre chose ? Qu'est-ce que ça dit de ce que tu values ?"},
+  },
+  {
+    emoji:'🤫',
+    en:{name:"Sound Layers",desc:"Sit completely still. Find the QUIETEST sound in the room. Then find one further away. Then even further — outside the room, outside the building. How far can you hear?",refl:"What was the most distant sound you found? Did hunting for quiet bring you any quiet inside?"},
+    es:{name:'Capas de Sonido',desc:'Siéntate completamente quieto/a. Encuentra el sonido MÁS SUAVE del salón. Luego uno más lejano. Luego aún más — fuera del salón, fuera del edificio. ¿Qué tan lejos puedes escuchar?',refl:'¿Cuál fue el sonido más distante que encontraste? ¿Buscar el silencio te trajo algo de calma?'},
+    fr:{name:"Couches de Sons",desc:"Reste complètement immobile. Trouve le son le plus DOUX de la salle. Puis un plus loin. Puis encore plus loin — hors de la salle, hors du bâtiment. Jusqu'où peux-tu entendre ?",refl:"Quel était le son le plus distant ? Chercher le silence t'a-t-il apporté du calme intérieur ?"},
+  },
+  {
+    emoji:'🌡️',
+    en:{name:"Temperature Detective",desc:"Feel 3 different surfaces near you — what's the warmest thing you can touch? The coolest? Now notice the air on your skin. Is it warm or cool?",refl:"What temperature felt best to you? Why might your body have preferences like that?"},
+    es:{name:'Detective de Temperatura',desc:'Toca 3 superficies cercanas — ¿cuál es la más cálida? ¿La más fría? Ahora nota el aire sobre tu piel. ¿Está cálido o frío?',refl:'¿Qué temperatura se sintió mejor? ¿Por qué crees que tu cuerpo tiene esas preferencias?'},
+    fr:{name:"Détective de Température",desc:"Touche 3 surfaces proches — qu'est-ce qui est le plus chaud ? Le plus frais ? Remarque maintenant l'air sur ta peau. Est-il chaud ou frais ?",refl:"Quelle température t'a semblé la meilleure ? Pourquoi ton corps aurait-il ces préférences ?"},
+  },
+  {
+    emoji:'🔢',
+    en:{name:"Count Something",desc:"Pick something in the room to count without moving — ceiling tiles, books on a shelf, dots on someone's shirt. Count carefully. If you lose count, start over.",refl:"What did you count? What happened to your thoughts while you were concentrating on the numbers?"},
+    es:{name:'Cuenta Algo',desc:'Elige algo en el salón para contar sin moverte — baldosas del techo, libros en un estante, lunares en algo. Cuenta con cuidado. Si pierdes la cuenta, vuelve a empezar.',refl:'¿Qué contaste? ¿Qué pasó con tus pensamientos mientras te concentrabas en los números?'},
+    fr:{name:"Compte Quelque Chose",desc:"Choisis quelque chose dans la salle à compter sans bouger — carreaux du plafond, livres sur une étagère, points sur quelque chose. Compte soigneusement. Si tu perds le fil, recommence.",refl:"Qu'as-tu compté ? Qu'est-il arrivé à tes pensées pendant que tu te concentrais ?"},
+  },
+  // ➕ ADD YOUR OWN TASKS HERE — copy any block above!
+  // More ideas: hum a note, tap a rhythm on your knee, draw a shape with your finger,
+  // write 3 gratitudes, progressive muscle squeeze, tree pose balance challenge
+];
+
+// ============================================================
+// AFFIRMATIONS — Shown after completing all 3 rounds
+// 💡 TO ADD MORE: Add a string to each en/es/fr array below.
+//    Keep them short, real, and empowering. Avoid toxic positivity.
+// ============================================================
+const AFFIRMATIONS = {
+  en:["You are brave, and breathing proves it. 💪","Every breath is a small act of self-love. 💜","You showed up for yourself today. That matters. ✨","Your breath is always there for you. So are you. 🌿","Calm is something you can create. You just did! 🌊","You are stronger than you think. Breathe that in. 🌟","This moment belongs to you. You handled it. 🏆","Even when things feel hard, your breath is your anchor. ⚓","You are exactly where you need to be right now. 🌸","Taking care of your mind is just as important as your body. 💙","One breath at a time — that's all it takes. 🕊️","You are learning to be the boss of your own nervous system. 🧠✨"],
+  es:["Eres valiente, y respirar lo demuestra. 💪","Cada respiración es un pequeño acto de amor propio. 💜","Hoy te presentaste por ti mismo/a. Eso importa. ✨","Tu respiración siempre está ahí para ti. Al igual que tú. 🌿","La calma es algo que puedes crear. ¡Acabas de hacerlo! 🌊","Eres más fuerte de lo que crees. Inhala eso. 🌟","Este momento te pertenece. Lo manejaste. 🏆","Incluso cuando las cosas se sienten difíciles, tu respiración es tu ancla. ⚓","Estás exactamente donde necesitas estar ahora mismo. 🌸","Cuidar tu mente es igual de importante que tu cuerpo. 💙","Una respiración a la vez — eso es todo lo que se necesita. 🕊️","Estás aprendiendo a ser el jefe de tu propio sistema nervioso. 🧠✨"],
+  fr:["Tu es courageux/se, et respirer le prouve. 💪","Chaque souffle est un petit acte d'amour de soi. 💜","Tu t'es montré(e) pour toi aujourd'hui. Ça compte. ✨","Ton souffle est toujours là pour toi. Comme toi. 🌿","Le calme est quelque chose que tu peux créer. Tu viens de le faire ! 🌊","Tu es plus fort(e) que tu ne le penses. Inspire ça. 🌟","Ce moment t'appartient. Tu l'as géré. 🏆","Même quand les choses semblent difficiles, ton souffle est ton ancre. ⚓","Tu es exactement là où tu dois être maintenant. 🌸","Prendre soin de ton esprit est aussi important que ton corps. 💙","Un souffle à la fois — c'est tout ce qu'il faut. 🕊️","Tu apprends à être le patron de ton propre système nerveux. 🧠✨"],
+};
+
+// ============================================================
+// REFLECTIONS — Journal prompts shown after mood check-in
+// 💡 TO ADD MORE PROMPTS: Add a string to each language array below.
+//    Great prompts connect the breath to real life and body awareness.
+//    Can tie into your SEL curriculum goals for the week!
+// ============================================================
+const REFLECTIONS = {
+  en:["If your feelings before and after were a weather report, what changed? ⛅→☀️","What's one thing you'd say to a friend who felt the way you did at the start? 💙","On a scale of 1-10, how hard was it to focus on your breath? What made it tricky?","Name one situation this week where this technique might have helped you.","What surprised you about today's breathwork? Did anything unexpected happen?","If you could teach someone one thing you learned today about your body, what would it be?","What does 'calm' feel like in YOUR body? Try to describe it physically.","You can't control what happens to you, but you can control your breath. How does that make you feel?"],
+  es:["Si tus sentimientos antes y después fueran un reporte del tiempo, ¿qué cambió? ⛅→☀️","¿Qué le dirías a un amigo que se sintiera como tú al principio? 💙","En una escala del 1-10, ¿qué tan difícil fue enfocarte en tu respiración?","Nombra una situación esta semana donde esta técnica podría haberte ayudado.","¿Qué te sorprendió del trabajo de respiración de hoy?","Si pudieras enseñarle a alguien una cosa que aprendiste hoy sobre tu cuerpo, ¿cuál sería?","¿Cómo se siente la 'calma' en TU cuerpo? Intenta describirla físicamente.","No puedes controlar lo que te pasa, pero sí puedes controlar tu respiración. ¿Cómo te hace sentir eso?"],
+  fr:["Si tes sentiments avant et après étaient un bulletin météo, qu'est-ce qui a changé ? ⛅→☀️","Qu'est-ce que tu dirais à un ami qui se sentait comme toi au début ? 💙","Sur une échelle de 1 à 10, à quel point était-il difficile de te concentrer sur ta respiration ?","Nomme une situation cette semaine où cette technique aurait pu t'aider.","Qu'est-ce qui t'a surpris dans le travail de respiration d'aujourd'hui ?","Si tu pouvais apprendre à quelqu'un une chose que tu as apprise aujourd'hui sur ton corps, quelle serait-elle ?","À quoi ressemble le 'calme' dans TON corps ? Essaie de le décrire physiquement.","Tu ne peux pas contrôler ce qui t'arrive, mais tu peux contrôler ta respiration. Comment ça te fait sentir ?"],
+  // ➕ ADD MORE REFLECTION PROMPTS: Just add a string to each array above!
+};
+
+const SCENES = [
+  {id:'night',en:'Aurora Night',es:'Noche Aurora',fr:'Nuit Aurore',emoji:'🌌',css:'#020612,#060d1e'},
+  {id:'beach',en:'Ocean Depths',es:'Profundidades',fr:'Fonds Marins',emoji:'🪼',css:'#010a14,#031e35'},
+  {id:'cherry',en:'Lofi Garden',es:'Jardín Lofi',fr:'Jardin Lofi',emoji:'🏮',css:'#0d0810,#1e1528'},
+  {id:'forest',en:'Firefly Forest',es:'Bosque Luciérnagas',fr:'Forêt Lucioles',emoji:'🌿',css:'#010a04,#031a0a'},
+  {id:'cosmos',en:'Deep Space',es:'Espacio Profundo',fr:'Espace Profond',emoji:'🚀',css:'#010108,#060318'},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  studentName:'', studentClass:'', vibeTitle:'', lang:'en',
+  selectedScene:'night', moodBefore:'', moodAfter:'',
+  selectedBreath:null, roundsDone:0, totalRounds:3,
+  currentPhase:0, isBreathing:false,
+  pendingReward:null, pendingTask:null, reflQ:'', reflA:'',
+  sessions:[], collection:{}, xp:0, level:1, streak:0,
+  lastDate:null, teacherPin:'Br3@the2025!', schoolName:'',
+  students:{}, // {id:{name,class,sessions,xp,level}}
+};
+
+function saveToStorage(){
+  try{localStorage.setItem('bwm_v2',JSON.stringify(state));}catch(e){}
+}
+function loadFromStorage(){
+  try{
+    const d=localStorage.getItem('bwm_v2');
+    if(d){
+      const s=JSON.parse(d);
+      Object.assign(state,s);
+      if(!state.students)state.students={};
+    }
+  }catch(e){}
+}
+
+// ============================================================
+// CANVAS SCENES
+// ============================================================
+const canvas=document.getElementById('bg-canvas');
+const ctx=canvas.getContext('2d');
+let sceneObjects=[];
+let animFrame=null;
+let currentScene='night';
+
+function resizeCanvas(){
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+}
+window.addEventListener('resize',()=>{resizeCanvas();buildScene(currentScene);});
+
+function buildScene(sceneId){
+  currentScene=sceneId;
+  sceneObjects=[];
+  const W=canvas.width,H=canvas.height;
+
+  if(sceneId==='night'){
+    // Calm stars
+    for(let i=0;i<110;i++){
+      sceneObjects.push({type:'star',x:Math.random()*W,y:Math.random()*H*0.55,
+        r:Math.random()*1.3+0.2,phase:Math.random()*Math.PI*2,
+        speed:Math.random()*0.003+0.001,
+        color:`hsl(${210+Math.random()*80},55%,${72+Math.random()*22}%)`});
+    }
+    // Moon
+    sceneObjects.push({type:'moon',x:W*0.75,y:H*0.15,r:50});
+    // Aurora bands — multiple slow-drifting ribbons
+    for(let i=0;i<4;i++){
+      sceneObjects.push({type:'aurora',band:i,phase:Math.random()*Math.PI*2,
+        speed:0.0003+i*0.0001,hue:150+i*40,y:H*(0.08+i*0.06)});
+    }
+    // Still water reflection at bottom
+    sceneObjects.push({type:'waterreflect'});
+    // Occasional shooting star
+    sceneObjects.push({type:'shoot',x:-50,y:H*0.1,active:false,timer:Math.random()*600+300,trail:[]});
+  }
+  else if(sceneId==='beach'){
+    // Underwater / ocean depths — bioluminescent
+    // Light rays from above
+    for(let i=0;i<6;i++){
+      sceneObjects.push({type:'lightray',x:W*(0.1+i*0.15),phase:Math.random()*Math.PI*2,speed:0.0008+Math.random()*0.0004,w:30+Math.random()*40});
+    }
+    // Jellyfish
+    for(let i=0;i<7;i++){
+      sceneObjects.push({type:'jelly',
+        x:Math.random()*W, y:H*(0.1+Math.random()*0.7),
+        phase:Math.random()*Math.PI*2, speed:0.008+Math.random()*0.006,
+        r:18+Math.random()*22, vy:-0.12-Math.random()*0.1,
+        hue:180+Math.random()*120});
+    }
+    // Rising bubbles
+    for(let i=0;i<30;i++){
+      sceneObjects.push({type:'bubble',
+        x:Math.random()*W, y:H+Math.random()*H,
+        r:Math.random()*4+1, speed:0.3+Math.random()*0.4,
+        phase:Math.random()*Math.PI*2});
+    }
+    // Seaweed
+    for(let i=0;i<12;i++){
+      sceneObjects.push({type:'seaweed',x:W*(i/11),h:H*(0.12+Math.random()*0.1),phase:Math.random()*Math.PI*2});
+    }
+    // Glowing particles
+    for(let i=0;i<40;i++){
+      sceneObjects.push({type:'bioglow',
+        x:Math.random()*W, y:Math.random()*H,
+        phase:Math.random()*Math.PI*2, speed:0.004+Math.random()*0.004,
+        r:Math.random()*2+0.5, hue:160+Math.random()*80});
+    }
+  }
+  else if(sceneId==='cherry'){
+    // Lofi garden — floating paper lanterns, mist, warm light pools
+    // Mist layers
+    for(let i=0;i<3;i++){
+      sceneObjects.push({type:'mist',y:H*(0.4+i*0.18),phase:i*1.2,speed:0.0003+i*0.0001,alpha:0.06-i*0.015});
+    }
+    // Floating lanterns
+    for(let i=0;i<8;i++){
+      sceneObjects.push({type:'lantern',
+        x:W*(0.05+Math.random()*0.9),
+        y:H*(0.2+Math.random()*0.55),
+        phase:Math.random()*Math.PI*2,
+        speed:0.005+Math.random()*0.004,
+        vy:-0.15-Math.random()*0.1,
+        hue:20+Math.random()*40,
+        size:10+Math.random()*12});
+    }
+    // Light pools on ground
+    for(let i=0;i<5;i++){
+      sceneObjects.push({type:'lightpool',x:W*(0.1+i*0.2),phase:Math.random()*Math.PI*2,speed:0.002});
+    }
+    // Gentle firefly-like sparks
+    for(let i=0;i<20;i++){
+      sceneObjects.push({type:'spark',
+        x:Math.random()*W, y:H*(0.2+Math.random()*0.6),
+        phase:Math.random()*Math.PI*2, speed:0.012+Math.random()*0.008,
+        vx:(Math.random()-0.5)*0.15, vy:-0.05-Math.random()*0.08});
+    }
+  }
+  else if(sceneId==='forest'){
+    // Silhouette tree line — multiple depth layers
+    for(let layer=0;layer<4;layer++){
+      const count=6+layer;
+      for(let i=0;i<count;i++){
+        sceneObjects.push({type:'siltree',
+          x:W*(i/(count-1))+(layer%2?W*0.04:-W*0.04),
+          baseY:H*(0.62+layer*0.06),
+          h:H*(0.42-layer*0.05),
+          layer,
+          alpha:0.4+layer*0.18});
+      }
+    }
+    // Rolling fog layers
+    for(let i=0;i<3;i++){
+      sceneObjects.push({type:'fog',y:H*(0.58+i*0.07),phase:i*1.8,speed:0.0004+i*0.0002,alpha:0.09-i*0.02});
+    }
+    // Fireflies — the beloved ones, enhanced
+    for(let i=0;i<35;i++){
+      sceneObjects.push({type:'firefly',
+        x:Math.random()*W, y:H*(0.2+Math.random()*0.6),
+        phase:Math.random()*Math.PI*2, speed:0.012+Math.random()*0.01,
+        vx:(Math.random()-0.5)*0.25, vy:(Math.random()-0.5)*0.18,
+        hue:45+Math.random()*30, r:3+Math.random()*2});
+    }
+    // Glowing mushrooms along ground
+    for(let i=0;i<8;i++){
+      sceneObjects.push({type:'shroom',x:W*(0.04+i*0.13),y:H*0.9,
+        phase:Math.random()*Math.PI*2,hue:140+Math.random()*80,r:5+Math.random()*5});
+    }
+    // Moon
+    sceneObjects.push({type:'fmoon',x:W*0.5,y:H*0.1});
+  }
+  else if(sceneId==='cosmos'){
+    // Stars
+    for(let i=0;i<180;i++){
+      const hue=[0,220,280,30][Math.floor(Math.random()*4)];
+      sceneObjects.push({type:'cstar',x:Math.random()*W,y:Math.random()*H,
+        r:Math.random()*1.5+0.2, phase:Math.random()*Math.PI*2, speed:Math.random()*0.003+0.0008,
+        color:hue===0?'white':`hsl(${hue},55%,82%)`});
+    }
+    // Large nebula clouds — rich color
+    sceneObjects.push({type:'nebula',x:W*0.3,y:H*0.35,rx:W*0.45,ry:H*0.3,hue:270,alpha:0.09});
+    sceneObjects.push({type:'nebula',x:W*0.75,y:H*0.65,rx:W*0.3,ry:H*0.25,hue:200,alpha:0.07});
+    // Big beautiful planet — center-right
+    sceneObjects.push({type:'bigplanet',x:W*0.78,y:H*0.28,r:Math.min(W,H)*0.12});
+    // Second smaller planet
+    sceneObjects.push({type:'smallplanet',x:W*0.12,y:H*0.72,r:Math.min(W,H)*0.055});
+    // Slow orbiting moon
+    sceneObjects.push({type:'orbitmoon',cx:W*0.5,cy:H*0.5,angle:0,radius:Math.min(W,H)*0.28,speed:0.0003});
+    // Slow shooting stars
+    for(let i=0;i<2;i++){
+      sceneObjects.push({type:'shoot',x:-50,y:H*(0.15+i*0.25),active:false,
+        timer:Math.random()*800+400+i*300,trail:[]});
+    }
+    // Distant galaxies (small spirals)
+    for(let i=0;i<3;i++){
+      sceneObjects.push({type:'galaxy',x:Math.random()*W,y:Math.random()*H*0.8,
+        r:8+Math.random()*10,phase:Math.random()*Math.PI*2,hue:200+Math.random()*80});
+    }
+  }
+}
+
+function drawScene(t){
+  const W=canvas.width,H=canvas.height;
+
+  // ── BACKGROUNDS ──────────────────────────────────────────
+  if(currentScene==='night'){
+    const g=ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#020612');g.addColorStop(0.45,'#060d1e');
+    g.addColorStop(0.6,'#08152a');g.addColorStop(1,'#04080f');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  }
+  else if(currentScene==='beach'){
+    // Deep ocean — midnight blues, teals, glowing depths
+    const g=ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#010a14');g.addColorStop(0.3,'#021428');
+    g.addColorStop(0.7,'#031e35');g.addColorStop(1,'#020c1a');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  }
+  else if(currentScene==='cherry'){
+    // Warm dark dusk — lofi garden
+    const g=ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#0d0810');g.addColorStop(0.4,'#1a1020');
+    g.addColorStop(0.75,'#1e1528');g.addColorStop(1,'#0a0610');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    // Ground glow
+    const gg=ctx.createLinearGradient(0,H*0.8,0,H);
+    gg.addColorStop(0,'transparent');gg.addColorStop(1,'rgba(60,20,80,0.4)');
+    ctx.fillStyle=gg;ctx.fillRect(0,H*0.8,W,H*0.2);
+  }
+  else if(currentScene==='forest'){
+    const g=ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#010a04');g.addColorStop(0.35,'#021408');
+    g.addColorStop(0.7,'#031a0a');g.addColorStop(1,'#010804');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  }
+  else if(currentScene==='cosmos'){
+    const g=ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#010108');g.addColorStop(0.4,'#04021a');
+    g.addColorStop(0.7,'#060318');g.addColorStop(1,'#020110');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  }
+
+  // ── OBJECTS ───────────────────────────────────────────────
+  sceneObjects.forEach(o=>{
+
+    // SHARED: calm twinkling stars
+    if(o.type==='star'||o.type==='cstar'){
+      const a=0.42+Math.sin(t*o.speed+o.phase)*0.18;
+      ctx.save();ctx.globalAlpha=a;ctx.fillStyle=o.color;
+      ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);ctx.fill();
+      if(o.r>1.1){
+        ctx.globalAlpha=a*0.25;ctx.beginPath();ctx.arc(o.x,o.y,o.r*2.8,0,Math.PI*2);ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // ── NIGHT ──
+    else if(o.type==='aurora'){
+      ctx.save();ctx.globalAlpha=0.55+Math.sin(t*o.speed+o.phase)*0.3;
+      for(let x=0;x<=W;x+=2){
+        const wave=Math.sin(x*0.006+t*o.speed*3+o.phase)*H*0.04+Math.sin(x*0.003+t*o.speed*1.5)*H*0.025;
+        const bandH=H*(0.06+Math.sin(t*o.speed*0.7+o.band)*0.02);
+        const grad=ctx.createLinearGradient(x,o.y+wave,x,o.y+wave+bandH);
+        grad.addColorStop(0,'transparent');
+        grad.addColorStop(0.3,`hsla(${o.hue},80%,55%,0.18)`);
+        grad.addColorStop(0.6,`hsla(${o.hue+30},75%,60%,0.12)`);
+        grad.addColorStop(1,'transparent');
+        ctx.fillStyle=grad;ctx.fillRect(x,o.y+wave,2,bandH);
+      }
+      ctx.restore();
+    }
+    else if(o.type==='waterreflect'){
+      // Still water in lower third
+      const wy=H*0.68;
+      ctx.save();
+      const wg=ctx.createLinearGradient(0,wy,0,H);
+      wg.addColorStop(0,'rgba(10,20,50,0.7)');wg.addColorStop(1,'rgba(2,5,15,0.9)');
+      ctx.fillStyle=wg;ctx.fillRect(0,wy,W,H-wy);
+      // Water shimmer line
+      ctx.strokeStyle='rgba(150,180,255,0.08)';ctx.lineWidth=1;
+      for(let wx=0;wx<W;wx+=3){
+        const shimmer=Math.sin(wx*0.03+t*0.001)*2+Math.sin(wx*0.015+t*0.0008)*1.5;
+        ctx.beginPath();ctx.moveTo(wx,wy+shimmer);ctx.lineTo(wx+2,wy+shimmer);ctx.stroke();
+      }
+      // Moon reflection column
+      ctx.globalAlpha=0.12+Math.sin(t*0.001)*0.05;
+      const rg=ctx.createLinearGradient(W*0.7,wy,W*0.8,H);
+      rg.addColorStop(0,'rgba(255,250,200,0.6)');rg.addColorStop(1,'transparent');
+      ctx.fillStyle=rg;
+      ctx.beginPath();ctx.ellipse(W*0.75,H*0.84,W*0.04,H*0.18,0,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+    }
+    else if(o.type==='shoot'){
+      o.timer--;
+      if(o.timer<=0&&!o.active){
+        o.active=true;o.x=-(Math.random()*W*0.3);
+        o.y=Math.random()*H*0.45;o.trail=[];o.progress=0;
+      }
+      if(o.active){
+        o.progress+=3.5;
+        o.trail.push({x:o.x+o.progress,y:o.y+o.progress*0.4});
+        if(o.trail.length>18)o.trail.shift();
+        ctx.save();
+        o.trail.forEach((pt,i)=>{
+          const a=(i/o.trail.length)*0.7;
+          ctx.globalAlpha=a;ctx.fillStyle='white';
+          ctx.beginPath();ctx.arc(pt.x,pt.y,1.2,0,Math.PI*2);ctx.fill();
+        });
+        ctx.restore();
+        if(o.x+o.progress>W+80){o.active=false;o.timer=Math.random()*800+500;o.trail=[];}
+      }
+    }
+    else if(o.type==='moon'||o.type==='fmoon'){
+      const x=o.x,y=o.y,r=o.r||42;
+      ctx.save();
+      // Outer glow
+      const mg=ctx.createRadialGradient(x,y,r*0.6,x,y,r*3.5);
+      mg.addColorStop(0,'rgba(220,240,255,0.12)');mg.addColorStop(0.4,'rgba(180,210,255,0.05)');mg.addColorStop(1,'transparent');
+      ctx.fillStyle=mg;ctx.beginPath();ctx.arc(x,y,r*3.5,0,Math.PI*2);ctx.fill();
+      // Body
+      const mb=ctx.createRadialGradient(x-r*0.25,y-r*0.25,r*0.05,x,y,r);
+      mb.addColorStop(0,'#f0f4ff');mb.addColorStop(0.6,'#d4dcf0');mb.addColorStop(1,'#8090b0');
+      ctx.fillStyle=mb;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+      // Subtle craters
+      ctx.fillStyle='rgba(100,120,160,0.12)';
+      [[x+r*0.25,y-r*0.15,r*0.1],[x-r*0.28,y+r*0.22,r*0.07],[x+r*0.08,y+r*0.32,r*0.055]].forEach(([cx,cy,cr])=>{
+        ctx.beginPath();ctx.arc(cx,cy,cr,0,Math.PI*2);ctx.fill();
+      });
+      ctx.restore();
+    }
+
+    // ── OCEAN DEPTHS ──
+    else if(o.type==='lightray'){
+      ctx.save();ctx.globalAlpha=0.04+Math.sin(t*o.speed+o.phase)*0.025;
+      const rg=ctx.createLinearGradient(o.x,0,o.x,H*0.7);
+      rg.addColorStop(0,'rgba(100,210,255,0.8)');rg.addColorStop(1,'transparent');
+      ctx.fillStyle=rg;
+      const sway=Math.sin(t*o.speed*1.5+o.phase)*20;
+      ctx.beginPath();ctx.moveTo(o.x-o.w/2,0);ctx.lineTo(o.x+o.w/2,0);
+      ctx.lineTo(o.x+o.w*1.5+sway,H*0.7);ctx.lineTo(o.x-o.w*1.5+sway,H*0.7);
+      ctx.closePath();ctx.fill();ctx.restore();
+    }
+    else if(o.type==='jelly'){
+      o.phase+=o.speed;
+      o.y+=o.vy*(0.5+Math.sin(o.phase)*0.5);
+      if(o.y<-o.r*3){o.y=H+o.r;}
+      if(o.y>H+o.r*3){o.y=-o.r;}
+      const pulse=0.85+Math.sin(o.phase*2)*0.15;
+      ctx.save();ctx.translate(o.x,o.y);
+      // Bell glow
+      const jg=ctx.createRadialGradient(0,0,o.r*0.1,0,0,o.r*pulse*1.8);
+      jg.addColorStop(0,`hsla(${o.hue},80%,70%,0.35)`);
+      jg.addColorStop(0.5,`hsla(${o.hue},70%,55%,0.15)`);
+      jg.addColorStop(1,'transparent');
+      ctx.fillStyle=jg;ctx.beginPath();ctx.arc(0,0,o.r*pulse*1.8,0,Math.PI*2);ctx.fill();
+      // Bell body
+      const jb=ctx.createRadialGradient(-o.r*0.2*pulse,-o.r*0.3*pulse,0,0,0,o.r*pulse);
+      jb.addColorStop(0,`hsla(${o.hue},90%,85%,0.7)`);
+      jb.addColorStop(0.5,`hsla(${o.hue},75%,60%,0.4)`);
+      jb.addColorStop(1,`hsla(${o.hue},60%,40%,0.1)`);
+      ctx.fillStyle=jb;
+      ctx.beginPath();ctx.ellipse(0,0,o.r*pulse,o.r*pulse*0.65,0,Math.PI,Math.PI*2);ctx.fill();
+      // Tentacles
+      ctx.strokeStyle=`hsla(${o.hue},70%,70%,0.3)`;ctx.lineWidth=1.2;
+      for(let i=0;i<6;i++){
+        const tx=(i-2.5)*o.r*0.32;
+        const tlen=o.r*(1+Math.sin(o.phase+i)*0.3);
+        ctx.beginPath();ctx.moveTo(tx,0);
+        ctx.quadraticCurveTo(tx+Math.sin(o.phase*0.7+i)*o.r*0.3,tlen*0.5,tx+Math.sin(o.phase+i)*o.r*0.2,tlen);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    else if(o.type==='bubble'){
+      o.y-=o.speed;
+      o.x+=Math.sin(t*0.002+o.phase)*0.4;
+      if(o.y<-10){o.y=H+10;o.x=Math.random()*canvas.width;}
+      ctx.save();ctx.globalAlpha=0.25+Math.sin(t*0.003+o.phase)*0.1;
+      ctx.strokeStyle='rgba(150,230,255,0.6)';ctx.lineWidth=0.8;
+      ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='rgba(200,240,255,0.05)';ctx.fill();
+      ctx.restore();
+    }
+    else if(o.type==='seaweed'){
+      const sway=Math.sin(t*0.001+o.phase)*12;
+      ctx.save();ctx.strokeStyle='rgba(30,140,80,0.45)';ctx.lineWidth=3;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(o.x,H);
+      const segs=5;
+      for(let i=1;i<=segs;i++){
+        const sy=H-o.h*(i/segs);
+        const sx=o.x+sway*(i/segs)*Math.sin(i);
+        ctx.lineTo(sx,sy);
+      }
+      ctx.stroke();ctx.restore();
+    }
+    else if(o.type==='bioglow'){
+      o.phase+=o.speed;
+      const a=Math.max(0,Math.sin(o.phase))*0.6+0.1;
+      ctx.save();ctx.globalAlpha=a;
+      const bg=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r*4);
+      bg.addColorStop(0,`hsla(${o.hue},90%,70%,0.8)`);bg.addColorStop(1,'transparent');
+      ctx.fillStyle=bg;ctx.beginPath();ctx.arc(o.x,o.y,o.r*4,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+    }
+
+    // ── LOFI GARDEN ──
+    else if(o.type==='mist'){
+      o.phase+=o.speed;
+      ctx.save();ctx.globalAlpha=o.alpha+Math.sin(o.phase)*0.02;
+      const mg=ctx.createLinearGradient(0,o.y-H*0.08,0,o.y+H*0.08);
+      mg.addColorStop(0,'transparent');mg.addColorStop(0.4,'rgba(180,140,220,0.6)');mg.addColorStop(0.6,'rgba(180,140,220,0.6)');mg.addColorStop(1,'transparent');
+      ctx.fillStyle=mg;
+      const shift=Math.sin(o.phase)*W*0.04;
+      ctx.fillRect(-W*0.1+shift,o.y-H*0.08,W*1.2,H*0.16);
+      ctx.restore();
+    }
+    else if(o.type==='lantern'){
+      o.phase+=o.speed;
+      o.y+=o.vy;
+      if(o.y<-30)o.y=canvas.height+30;
+      const sway=Math.sin(o.phase)*o.size*0.4;
+      const glow=0.6+Math.sin(o.phase*1.3)*0.2;
+      ctx.save();ctx.translate(o.x+sway,o.y);
+      // Glow halo
+      const lg=ctx.createRadialGradient(0,0,o.size*0.5,0,0,o.size*3.5);
+      lg.addColorStop(0,`hsla(${o.hue},90%,70%,${0.35*glow})`);
+      lg.addColorStop(1,'transparent');
+      ctx.fillStyle=lg;ctx.beginPath();ctx.arc(0,0,o.size*3.5,0,Math.PI*2);ctx.fill();
+      // Lantern body
+      ctx.fillStyle=`hsla(${o.hue},80%,${60+glow*15}%,0.85)`;
+      ctx.beginPath();ctx.ellipse(0,0,o.size*0.55,o.size*0.8,0,0,Math.PI*2);ctx.fill();
+      // Top cap
+      ctx.fillStyle=`hsla(${o.hue},50%,35%,0.9)`;
+      ctx.beginPath();ctx.ellipse(0,-o.size*0.8,o.size*0.3,o.size*0.18,0,0,Math.PI*2);ctx.fill();
+      // String
+      ctx.strokeStyle=`rgba(180,140,100,0.4)`;ctx.lineWidth=0.8;
+      ctx.beginPath();ctx.moveTo(0,o.size*0.8);ctx.lineTo(0,o.size*1.4);ctx.stroke();
+      ctx.restore();
+    }
+    else if(o.type==='lightpool'){
+      o.phase+=o.speed;
+      ctx.save();ctx.globalAlpha=0.06+Math.sin(o.phase)*0.025;
+      const pg=ctx.createRadialGradient(o.x,H,0,o.x,H*0.8,H*0.25);
+      pg.addColorStop(0,'rgba(255,200,120,0.7)');pg.addColorStop(1,'transparent');
+      ctx.fillStyle=pg;ctx.beginPath();ctx.ellipse(o.x,H,W*0.12,H*0.22,0,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+    }
+    else if(o.type==='spark'){
+      o.phase+=o.speed;
+      o.x+=o.vx;o.y+=o.vy;
+      if(o.y<H*0.05||o.y>H*0.92){o.vy*=-1;}
+      if(o.x<0||o.x>canvas.width){o.vx*=-1;}
+      const a=Math.max(0,Math.sin(o.phase))*0.7;
+      ctx.save();ctx.globalAlpha=a;
+      const sg=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,5);
+      sg.addColorStop(0,'rgba(255,200,120,0.9)');sg.addColorStop(1,'transparent');
+      ctx.fillStyle=sg;ctx.beginPath();ctx.arc(o.x,o.y,5,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+    }
+
+    // ── FOREST ──
+    else if(o.type==='siltree'){
+      const sway=Math.sin(t*0.0007+o.x*0.01)*3*(1-o.layer*0.2);
+      ctx.save();ctx.globalAlpha=o.alpha;
+      const darkening=0.06+o.layer*0.04;
+      ctx.fillStyle=`rgba(0,${Math.floor(darkening*255)},0,1)`;
+      // Trunk
+      ctx.fillStyle=`rgba(${5+o.layer*3},${10+o.layer*5},${5+o.layer*3},${o.alpha})`;
+      ctx.fillRect(o.x-3+sway,o.baseY-o.h*0.15,6,o.h*0.16);
+      // Layered triangle canopy
+      for(let ci=0;ci<3;ci++){
+        const cy=o.baseY-o.h*(0.12+ci*0.26);
+        const cw=o.h*(0.28-ci*0.05);
+        const ch=o.h*(0.35-ci*0.04);
+        const shade=`rgba(${3+o.layer*2},${8+o.layer*6+ci*4},${3+o.layer*2},${o.alpha*(0.9-ci*0.1)})`;
+        ctx.fillStyle=shade;
+        ctx.beginPath();
+        ctx.moveTo(o.x+sway*(1-ci*0.2),cy-ch);
+        ctx.lineTo(o.x-cw+sway*(0.5-ci*0.1),cy);
+        ctx.lineTo(o.x+cw+sway*(0.5-ci*0.1),cy);
+        ctx.closePath();ctx.fill();
+      }
+      ctx.restore();
+    }
+    else if(o.type==='fog'){
+      o.phase+=o.speed;
+      ctx.save();ctx.globalAlpha=o.alpha+Math.sin(o.phase)*0.018;
+      const fg=ctx.createLinearGradient(0,o.y-H*0.06,0,o.y+H*0.06);
+      fg.addColorStop(0,'transparent');fg.addColorStop(0.5,'rgba(120,170,140,0.5)');fg.addColorStop(1,'transparent');
+      ctx.fillStyle=fg;
+      const drift=Math.sin(o.phase*0.7)*W*0.05;
+      ctx.fillRect(-W*0.1+drift,o.y-H*0.06,W*1.2,H*0.12);
+      ctx.restore();
+    }
+    else if(o.type==='firefly'){
+      o.x+=o.vx;o.y+=o.vy;
+      if(o.x<0||o.x>canvas.width)o.vx*=-1;
+      if(o.y<canvas.height*0.15||o.y>canvas.height*0.88)o.vy*=-1;
+      o.phase+=o.speed;
+      const a=Math.max(0,Math.sin(o.phase));
+      ctx.save();ctx.globalAlpha=a;
+      const ffg=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r*5);
+      ffg.addColorStop(0,`hsla(${o.hue},95%,90%,1)`);
+      ffg.addColorStop(0.3,`hsla(${o.hue},85%,65%,0.7)`);
+      ffg.addColorStop(1,'transparent');
+      ctx.fillStyle=ffg;ctx.beginPath();ctx.arc(o.x,o.y,o.r*5,0,Math.PI*2);ctx.fill();
+      // Bright core
+      ctx.globalAlpha=a*0.9;ctx.fillStyle=`hsl(${o.hue},100%,95%)`;
+      ctx.beginPath();ctx.arc(o.x,o.y,o.r*0.8,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+    }
+    else if(o.type==='shroom'){
+      o.phase+=0.005;
+      const glow=0.5+Math.sin(o.phase)*0.3;
+      ctx.save();
+      // Glow
+      const sg=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r*4);
+      sg.addColorStop(0,`hsla(${o.hue},85%,60%,${0.3*glow})`);sg.addColorStop(1,'transparent');
+      ctx.fillStyle=sg;ctx.beginPath();ctx.arc(o.x,o.y,o.r*4,0,Math.PI*2);ctx.fill();
+      // Stem
+      ctx.fillStyle=`hsla(${o.hue},30%,70%,0.6)`;
+      ctx.fillRect(o.x-o.r*0.3,o.y-o.r*0.5,o.r*0.6,o.r*0.7);
+      // Cap
+      ctx.fillStyle=`hsla(${o.hue},75%,${45+glow*20}%,0.85)`;
+      ctx.beginPath();ctx.ellipse(o.x,o.y-o.r*0.5,o.r,o.r*0.65,0,Math.PI,Math.PI*2);ctx.fill();
+      // Spots
+      ctx.fillStyle='rgba(255,255,255,0.3)';
+      [[0,-o.r*0.2,o.r*0.12],[o.r*0.3,-o.r*0.4,o.r*0.08],[-o.r*0.3,-o.r*0.35,o.r*0.07]].forEach(([dx,dy,dr])=>{
+        ctx.beginPath();ctx.arc(o.x+dx,o.y+dy,dr,0,Math.PI*2);ctx.fill();
+      });
+      ctx.restore();
+    }
+
+    // ── COSMOS ──
+    else if(o.type==='nebula'){
+      ctx.save();
+      const ng=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,Math.max(o.rx,o.ry));
+      ng.addColorStop(0,`hsla(${o.hue},70%,40%,${o.alpha*1.8})`);
+      ng.addColorStop(0.4,`hsla(${o.hue+30},60%,35%,${o.alpha})`);
+      ng.addColorStop(1,'transparent');
+      ctx.fillStyle=ng;
+      ctx.beginPath();ctx.ellipse(o.x,o.y,o.rx,o.ry,Math.PI*0.15,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+    }
+    else if(o.type==='bigplanet'){
+      drawBigPlanet(ctx,o.x,o.y,o.r,t);
+    }
+    else if(o.type==='smallplanet'){
+      drawSmallPlanet(ctx,o.x,o.y,o.r,t);
+    }
+    else if(o.type==='orbitmoon'){
+      o.angle+=o.speed;
+      const mx=o.cx+Math.cos(o.angle)*o.radius;
+      const my=o.cy+Math.sin(o.angle)*o.radius*0.45;
+      const mr=Math.min(canvas.width,canvas.height)*0.04;
+      ctx.save();
+      // Moon glow
+      const mg=ctx.createRadialGradient(mx,my,mr*0.5,mx,my,mr*3);
+      mg.addColorStop(0,'rgba(200,220,255,0.18)');mg.addColorStop(1,'transparent');
+      ctx.fillStyle=mg;ctx.beginPath();ctx.arc(mx,my,mr*3,0,Math.PI*2);ctx.fill();
+      // Moon body
+      const mb=ctx.createRadialGradient(mx-mr*0.25,my-mr*0.25,mr*0.05,mx,my,mr);
+      mb.addColorStop(0,'#e8eeff');mb.addColorStop(0.6,'#c0ccee');mb.addColorStop(1,'#7080aa');
+      ctx.fillStyle=mb;ctx.beginPath();ctx.arc(mx,my,mr,0,Math.PI*2);ctx.fill();
+      // Craters
+      ctx.fillStyle='rgba(80,100,160,0.12)';
+      [[mx+mr*0.28,my-mr*0.15,mr*0.11],[mx-mr*0.25,my+mr*0.22,mr*0.07],[mx+mr*0.08,my+mr*0.3,mr*0.06]].forEach(([cx,cy,cr])=>{
+        ctx.beginPath();ctx.arc(cx,cy,cr,0,Math.PI*2);ctx.fill();
+      });
+      ctx.restore();
+    }
+    else if(o.type==='galaxy'){
+      o.phase+=0.002;
+      ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.phase);ctx.globalAlpha=0.35;
+      for(let arm=0;arm<2;arm++){
+        ctx.rotate(Math.PI);
+        for(let i=0;i<12;i++){
+          const angle=i*0.5;const dist=i*o.r*0.08;
+          const gx=Math.cos(angle)*dist,gy=Math.sin(angle)*dist*0.4;
+          const gr=Math.max(0.3,(12-i)/12*1.8);
+          ctx.fillStyle=`hsla(${o.hue},60%,80%,${(12-i)/12*0.5})`;
+          ctx.beginPath();ctx.arc(gx,gy,gr,0,Math.PI*2);ctx.fill();
+        }
+      }
+      ctx.restore();
+    }
+  });
+}
+
+function drawBigPlanet(ctx,x,y,r,t){
+  // ART HOOK: Replace with ctx.drawImage(planetSprite, x-r, y-r, r*2, r*2)
+  ctx.save();
+  // Atmosphere glow
+  const ag=ctx.createRadialGradient(x,y,r*0.85,x,y,r*2.2);
+  ag.addColorStop(0,'rgba(80,140,255,0.15)');ag.addColorStop(0.5,'rgba(60,100,200,0.06)');ag.addColorStop(1,'transparent');
+  ctx.fillStyle=ag;ctx.beginPath();ctx.arc(x,y,r*2.2,0,Math.PI*2);ctx.fill();
+  // Body
+  const bg=ctx.createRadialGradient(x-r*0.3,y-r*0.3,r*0.05,x,y,r);
+  bg.addColorStop(0,'#8ab4ff');bg.addColorStop(0.3,'#4060c0');bg.addColorStop(0.65,'#1a3080');bg.addColorStop(1,'#060d30');
+  ctx.fillStyle=bg;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+  // Bands
+  ctx.save();ctx.clip();
+  const bandData=[[-0.35,'rgba(100,160,255,0.12)',r*0.18],[-0.1,'rgba(80,130,220,0.15)',r*0.12],[0.2,'rgba(60,100,180,0.1)',r*0.15],[0.45,'rgba(100,160,255,0.08)',r*0.1]];
+  bandData.forEach(([dy,col,bh])=>{
+    ctx.fillStyle=col;ctx.fillRect(x-r,y+r*dy-bh/2,r*2,bh);
+  });
+  ctx.restore();
+  // Ring
+  ctx.save();ctx.globalAlpha=0.6;
+  ctx.strokeStyle='rgba(180,200,255,0.5)';ctx.lineWidth=r*0.12;
+  ctx.beginPath();ctx.ellipse(x,y+r*0.05,r*1.75,r*0.32,Math.PI*0.04,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(140,170,255,0.2)';ctx.lineWidth=r*0.22;
+  ctx.beginPath();ctx.ellipse(x,y+r*0.05,r*2.0,r*0.38,Math.PI*0.04,0,Math.PI*2);ctx.stroke();
+  ctx.restore();
+  ctx.restore();
+}
+
+function drawSmallPlanet(ctx,x,y,r,t){
+  // ART HOOK: Replace with custom sprite
+  ctx.save();
+  const sg=ctx.createRadialGradient(x,y,r*0.7,x,y,r*2);
+  sg.addColorStop(0,'rgba(255,140,80,0.1)');sg.addColorStop(1,'transparent');
+  ctx.fillStyle=sg;ctx.beginPath();ctx.arc(x,y,r*2,0,Math.PI*2);ctx.fill();
+  const bg=ctx.createRadialGradient(x-r*0.25,y-r*0.25,r*0.05,x,y,r);
+  bg.addColorStop(0,'#ffb870');bg.addColorStop(0.4,'#d06020');bg.addColorStop(0.75,'#802010');bg.addColorStop(1,'#200808');
+  ctx.fillStyle=bg;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+  // Storm eye
+  ctx.strokeStyle='rgba(255,200,100,0.2)';ctx.lineWidth=r*0.08;
+  ctx.beginPath();ctx.ellipse(x+r*0.15,y-r*0.1,r*0.35,r*0.22,Math.PI*0.2,0,Math.PI*2);ctx.stroke();
+  ctx.restore();
+}
+
+
+function animateScene(t){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawScene(t);
+  animFrame=requestAnimationFrame(animateScene);
+}
+
+// ============================================================
+// UI HELPERS
+// ============================================================
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el){el.classList.add('active');el.scrollTop=0;}
+
+  if(id==='screen-home')updateHome();
+  if(id==='screen-journal')renderJournal();
+  if(id==='screen-collection')renderCollection();
+  if(id==='screen-leaderboard')renderLeaderboard();
+  if(id==='screen-guide')buildGuide();
+  // Highlight active bottom nav tab
+  const tabMap={'screen-home':'bnav-home','screen-journal':'bnav-journal','screen-collection':'bnav-collection','screen-leaderboard':'bnav-lb'};
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active-tab'));
+  if(tabMap[id])document.getElementById(tabMap[id])?.classList.add('active-tab');
+  // Hide bottom nav on immersive screens
+  const hideNav=['screen-breath','screen-sync','screen-register'];
+  const nav=document.getElementById('bottom-nav');
+  if(nav)nav.style.display=hideNav.includes(id)?'none':'flex';
+}
+
+function updateHome(){
+  document.getElementById('h-level').textContent=state.level;
+  const vibe=document.getElementById('h-vibe');
+  if(vibe)vibe.textContent=state.vibeTitle?(state.studentName+' · '+state.vibeTitle):'';
+  document.getElementById('h-streak').textContent=state.streak;
+  document.getElementById('h-sessions').textContent=state.sessions.length;
+  const xpPct=(state.xp/(state.level*100))*100;
+  document.getElementById('h-xpbar').style.width=xpPct+'%';
+  document.getElementById('h-xplabel').textContent=`XP: ${state.xp} / ${state.level*100}`;
+  document.getElementById('h-journalCount').textContent=`${state.sessions.length} sessions`;
+  const earned=Object.values(state.collection).reduce((a,b)=>a+b,0);
+  document.getElementById('h-collCount').textContent=`${earned} items`;
+  const tips=[t('tip0'),t('tip1'),t('tip2'),t('tip3'),t('tip4'),t('tip5')];
+  document.getElementById('h-tip').textContent=tips[Math.floor(Date.now()/86400000)%tips.length];
+}
+
+// ============================================================
+// REGISTRATION
+// ============================================================
+function selectPeriod(period, el){
+  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('reg-class').value=period;
+}
+
+function selectVibe(v,el){
+  document.querySelectorAll('.vibe-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('reg-vibe').value=v;
+}
+
+function registerStudent(){
+  const name=document.getElementById('reg-name').value.trim();
+  const cls=document.getElementById('reg-class').value.trim();
+  if(!name)return alert('Please enter your name!');
+  if(!cls)return alert('Please select your class period!');
+  state.studentName=name;
+  state.studentClass=cls||'General';
+  state.vibeTitle=document.getElementById('reg-vibe').value||'Calm Demon 😈';
+  // Register in students roster
+  const key=name.toLowerCase().replace(/\s+/g,'_')+'_'+cls;
+  if(!state.students[key]){
+    state.students[key]={name,class:cls,sessions:0,xp:0,level:1};
+  }
+  saveToStorage();
+  showScreen('screen-home');
+}
+
+function checkRegistration(){
+  if(!state.studentName){showScreen('screen-register');return false;}
+  return true;
+}
+
+// ============================================================
+// SCENE PICKER
+// ============================================================
+function buildScenePicker(){
+  const grid=document.getElementById('scene-grid');
+  grid.innerHTML='';
+  SCENES.forEach(s=>{
+    const el=document.createElement('div');
+    el.className='scene-opt'+(s.id===state.selectedScene?' sel':'');
+    el.style.background=s.css.split(',').slice(0,2).join(',')+')'||'#111';
+    el.style.background=`${s.css.substring(0,s.css.indexOf('('))}(135deg, ${s.css.substring(s.css.indexOf('(')+1).split(',')[1].trim().split(' ')[0]}, ${s.css.substring(s.css.indexOf('(')+1).split(',').pop().replace(')','').trim()})`;
+    // simpler approach:
+    const colors={'night':'#020612,#0a1535','beach':'#010a14,#042040','cherry':'#0d0810,#2a1535','forest':'#010a04,#062010','cosmos':'#010108,#0a0530'};
+    el.style.background=`linear-gradient(135deg,${(colors[s.id]||'#111,#222')})`;
+    el.innerHTML=`<div class="si">${s.emoji}</div>${s[lang]||s.en}`;
+    el.onclick=()=>{
+      document.querySelectorAll('.scene-opt').forEach(o=>o.classList.remove('sel'));
+      el.classList.add('sel');
+      state.selectedScene=s.id;
+      buildScene(s.id);
+    };
+    grid.appendChild(el);
+  });
+}
+
+// ============================================================
+// MOODS
+// ============================================================
+function buildMoodChips(containerId){
+  const c=document.getElementById(containerId);
+  if(!c)return;
+  c.innerHTML='';
+  MOODS.forEach(m=>{
+    const ch=document.createElement('div');
+    ch.className='mood-chip';
+    ch.innerHTML=`${m.emoji} ${m[lang]||m.en}`;
+    ch.onclick=()=>{
+      c.querySelectorAll('.mood-chip').forEach(x=>x.classList.remove('sel'));
+      ch.classList.add('sel');
+    };
+    c.appendChild(ch);
+  });
+}
+
+function getMood(gridId,customId){
+  const sel=document.querySelector(`#${gridId} .mood-chip.sel`);
+  const custom=document.getElementById(customId)?.value.trim();
+  if(custom)return custom;
+  if(sel)return sel.textContent.trim();
+  return 'something';
+}
+
+// ============================================================
+// BREATH PICKER
+// ============================================================
+function buildBreathList(){
+  const list=document.getElementById('breath-list');
+  if(!list)return;
+  list.innerHTML='';
+  BREATHS.forEach((b,i)=>{
+    const locked=state.level<b.unlockLevel;
+    const el=document.createElement('div');
+    el.className='breath-item'+(locked?' locked':'');
+    const bdata=b[lang]||b.en;
+    el.innerHTML=`
+      <div class="bi-icon">${b.emoji}</div>
+      <div style="flex:1">
+        <div class="bi-name">${bdata.name}</div>
+        <div class="bi-desc">${bdata.short}</div>
+        ${locked?`<div class="lock-hint">${t('lockText')} ${b.unlockLevel}</div>`:''}
+      </div>
+      <div class="bi-badge ${locked?'badge-locked':'badge-unlocked'}">${locked?'🔒':b.badge}</div>
+    `;
+    if(!locked)el.onclick=()=>startSession(b);
+    list.appendChild(el);
+  });
+}
+
+// ============================================================
+// FLOW
+// ============================================================
+function startFlow(){
+  if(!checkRegistration())return;
+  buildScenePicker();
+  showScreen('screen-scene');
+}
+
+function goToBreathPick(){
+  state.moodBefore=getMood('mood-before-chips','mood-before-custom');
+  buildBreathList();
+  showScreen('screen-breath-pick');
+}
+
+// ============================================================
+// BREATHING ENGINE
+// ============================================================
+let phaseTimer=null;
+let orbScale=1;
+
+function startSession(breath){
+  state.selectedBreath=breath;
+  state.roundsDone=0;
+  launchRound();
+}
+
+function launchRound(){
+  const b=state.selectedBreath;
+  if(!b)return showScreen('screen-home');
+  document.getElementById('br-name').textContent=(b[lang]||b.en).name;
+  document.getElementById('br-round-lbl').textContent=`${t('rounds')} ${state.roundsDone+1} ${t('of')} ${state.totalRounds}`;
+  // Dots
+  const dots=document.getElementById('br-dots');
+  dots.innerHTML='';
+  for(let i=0;i<state.totalRounds;i++){
+    const d=document.createElement('div');
+    d.className='cdot'+(i<state.roundsDone?' done':i===state.roundsDone?' cur':'');
+    dots.appendChild(d);
+  }
+  showScreen('screen-breath');
+  state.isBreathing=true;
+  state.currentPhase=0;
+  orbScale=1;
+
+  // Show a simple "get ready" preview before the first phase
+  if(state.roundsDone===0){
+    const phaseTxt=document.getElementById('br-phase-txt');
+    const hintTxt=document.getElementById('br-hint');
+    const orb=document.getElementById('br-orb');
+    const bar=document.getElementById('br-phasebar');
+    orb.style.background='radial-gradient(circle at 35% 35%,#a78bfa,#5b21b6)';
+    orb.style.boxShadow='0 0 40px rgba(139,92,246,.5)';
+    bar.style.width='0%';
+    orb.style.transform='scale(1)';
+
+    // Build a quick plain-English summary of the phases
+    const steps=b.phases.map(p=>p[lang]||p.en).join('  →  ');
+    const previewLines=[
+      {txt:'Get comfortable 🪑', hint:'Sit up tall, feet on the floor', delay:0},
+      {txt:'Here\'s what\'s coming:', hint:steps, delay:1200},
+      {txt:'Starting in 3…', hint:'Follow the circle', delay:2600},
+      {txt:'2…', hint:'Follow the circle', delay:3600},
+      {txt:'1…', hint:'Follow the circle', delay:4600},
+    ];
+    previewLines.forEach(({txt,hint,delay})=>{
+      setTimeout(()=>{
+        if(!state.isBreathing)return;
+        phaseTxt.textContent=txt;
+        hintTxt.textContent=hint;
+      },delay);
+    });
+    setTimeout(()=>{
+      if(!state.isBreathing)return;
+      runPhase();
+    },5500);
+  } else {
+    runPhase();
+  }
+}
+
+function runPhase(){
+  if(!state.isBreathing)return;
+  const b=state.selectedBreath;
+  const phase=b.phases[state.currentPhase];
+  const pdata_name=phase[lang]||phase.en;
+  const pdata_hint=phase.hint[lang]||phase.hint.en;
+
+  document.getElementById('br-phase-txt').textContent=pdata_name;
+  document.getElementById('br-hint').textContent=pdata_hint;
+
+  const orb=document.getElementById('br-orb');
+  const bar=document.getElementById('br-phasebar');
+
+  // Color phase
+  const colors={'1':'radial-gradient(circle at 35% 35%,#a78bfa,#5b21b6)','-1':'radial-gradient(circle at 35% 35%,#f97316,#b91c1c)','0':'radial-gradient(circle at 35% 35%,#34d399,#047857)'};
+  orb.style.background=colors[String(phase.dir)];
+  orb.style.boxShadow=phase.dir===1?'0 0 60px rgba(139,92,246,.8),0 0 120px rgba(139,92,246,.3)':phase.dir===-1?'0 0 60px rgba(249,115,22,.8),0 0 100px rgba(249,115,22,.25)':'0 0 60px rgba(52,211,153,.7),0 0 100px rgba(52,211,153,.2)';
+
+  const targetScale=phase.dir===1?1.5:phase.dir===-1?0.65:orbScale;
+  const dur=phase.dur*1000;
+  const startTime=performance.now();
+  const startScale=orbScale;
+
+  clearInterval(phaseTimer);
+  bar.style.width='0%';
+
+  function tick(now){
+    if(!state.isBreathing)return;
+    const elapsed=now-startTime;
+    const prog=Math.min(elapsed/dur,1);
+    const ease=prog<0.5?2*prog*prog:(1-Math.pow(-2*prog+2,2)/2);
+    orbScale=startScale+(targetScale-startScale)*ease;
+    orb.style.transform=`scale(${orbScale})`;
+    bar.style.width=(prog*100)+'%';
+    if(prog<1){requestAnimationFrame(tick);}
+    else{
+      state.currentPhase++;
+      if(state.currentPhase>=b.phases.length){
+        state.currentPhase=0;
+        state.roundsDone++;
+        if(state.roundsDone>=state.totalRounds){
+          state.isBreathing=false;
+          finishAllRounds();
+        }else{
+          // Silently continue to next round — no interruption between rounds
+          setTimeout(launchRound, 600);
+        }
+      }else{
+        setTimeout(runPhase,250);
+      }
+    }
+  }
+  requestAnimationFrame(tick);
+}
+
+function stopBreathing(){
+  state.isBreathing=false;
+  clearInterval(phaseTimer);
+  showScreen('screen-home');
+}
+
+function showAffirmation(){
+  const affs=AFFIRMATIONS[lang]||AFFIRMATIONS.en;
+  document.getElementById('aff-text').textContent=affs[Math.floor(Math.random()*affs.length)];
+  document.getElementById('aff-rounds').textContent=`${t('rounds')} ${state.roundsDone} ${t('of')} ${state.totalRounds} ✓`;
+  showScreen('screen-affirmation');
+}
+
+function continueBreathing(){
+  if(!state.selectedBreath)return showScreen('screen-home');
+  state.isBreathing=true;
+  launchRound();
+}
+
+// ============================================================
+// REWARDS
+// ============================================================
+function finishAllRounds(){
+  const isTask=Math.random()<0.4;
+  if(isTask){
+    state.pendingTask=TASKS[Math.floor(Math.random()*TASKS.length)];
+    state.pendingReward=null;
+  }else{
+    // 5% chance of rare reward
+    const rares=REWARDS.filter(r=>r.rare);
+    const commons=REWARDS.filter(r=>!r.rare);
+    if(rares.length&&Math.random()<0.05){
+      state.pendingReward=rares[Math.floor(Math.random()*rares.length)];
+    }else{
+      state.pendingReward=commons[Math.floor(Math.random()*commons.length)];
+    }
+    state.pendingTask=null;
+  }
+  renderRewardScreen();
+}
+
+function renderRewardScreen(){
+  const affs=AFFIRMATIONS[lang]||AFFIRMATIONS.en;
+  const aff=affs[Math.floor(Math.random()*affs.length)];
+  let html=`<div style="color:var(--gold);font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:700;text-align:center;margin:14px 0;line-height:1.5;">${aff}</div>`;
+
+  if(state.pendingReward){
+    const rd=state.pendingReward[lang]||state.pendingReward.en;
+    const rareBadge=state.pendingReward.rare?'<div style="display:inline-block;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:.65rem;font-weight:900;padding:2px 8px;border-radius:50px;margin-bottom:8px;letter-spacing:.06em;">⭐ RARE DROP</div><br>':'';
+    const soundBtn=rd.sound?`<button onclick="playRewardSound('${rd.sound}')" style="margin-top:10px;padding:8px 18px;border-radius:50px;background:var(--surface2);border:1px solid var(--accent);color:var(--accent2);font-size:.8rem;font-weight:700;cursor:pointer;" id="sound-play-btn">▶ Play ${rd.sound==='birdsong'?'Birdsong':'432Hz Tone'}</button>`:'';
+    html+=`<div class="reward-big">
+      ${rareBadge}
+      <div class="reward-emoji-big">${state.pendingReward.emoji}</div>
+      <div class="reward-nm">🎁 ${rd.name}</div>
+      <div class="reward-say">${rd.say}</div>
+      ${soundBtn}
+    </div>`;
+  }else if(state.pendingTask){
+    const td=state.pendingTask[lang]||state.pendingTask.en;
+    html+=`<div class="task-big">
+      <div class="task-nm">${state.pendingTask.emoji} ${td.name}</div>
+      <div class="task-txt">${td.desc}</div>
+    </div>`;
+  }
+
+  document.getElementById('reward-display').innerHTML=html;
+  showScreen('screen-reward');
+}
+
+function goToMoodAfter(){
+  buildMoodChips('mood-after-chips');
+  showScreen('screen-mood-after');
+}
+
+function goToReflection(){
+  state.moodAfter=getMood('mood-after-chips','mood-after-custom');
+  const refls=REFLECTIONS[lang]||REFLECTIONS.en;
+  // If task had reflection question, prefer that
+  if(state.pendingTask){
+    const td=state.pendingTask[lang]||state.pendingTask.en;
+    state.reflQ=td.refl;
+  }else{
+    state.reflQ=refls[Math.floor(Math.random()*refls.length)];
+  }
+  document.getElementById('refl-question').textContent=state.reflQ;
+  document.getElementById('refl-answer').value='';
+  showScreen('screen-reflection');
+}
+
+function saveSession(){
+  state.reflA=document.getElementById('refl-answer').value.trim();
+
+  // Add reward to collection
+  if(state.pendingReward){
+    const k=state.pendingReward.en.name;
+    state.collection[k]=(state.collection[k]||0)+1;
+  }
+
+  // XP
+  const xpGained=20+state.roundsDone*15;
+  state.xp+=xpGained;
+  while(state.xp>=(state.level*100)){
+    state.xp-=state.level*100;
+    state.level++;
+  }
+
+  // Streak
+  const today=new Date().toDateString();
+  if(state.lastDate!==today){
+    const yest=new Date(Date.now()-86400000).toDateString();
+    state.streak=state.lastDate===yest?state.streak+1:1;
+    state.lastDate=today;
+  }
+
+  // Record session
+  const breath=state.selectedBreath||BREATHS[0];
+  const sess={
+    date:new Date().toLocaleString(),
+    breathId:breath.id,
+    breathName:(breath[lang]||breath.en).name,
+    breathEmoji:breath.emoji,
+    moodBefore:state.moodBefore,moodAfter:state.moodAfter,
+    reward:state.pendingReward?`${state.pendingReward.emoji} ${(state.pendingReward[lang]||state.pendingReward.en).name}`:null,
+    task:state.pendingTask?`${state.pendingTask.emoji} ${(state.pendingTask[lang]||state.pendingTask.en).name}`:null,
+    reflection:state.reflA,reflectionQ:state.reflQ,
+    xpGained,studentName:state.studentName,studentClass:state.studentClass,
+  };
+  state.sessions.unshift(sess);
+  if(state.sessions.length>100)state.sessions=state.sessions.slice(0,100);
+
+  // Update student roster
+  const key=state.studentName.toLowerCase().replace(/\s+/g,'_')+'_'+state.studentClass;
+  if(!state.students[key])state.students[key]={name:state.studentName,class:state.studentClass,sessions:0,xp:0,level:1};
+  state.students[key].sessions++;
+  state.students[key].xp+=xpGained;
+  while(state.students[key].xp>=(state.students[key].level*100)){
+    state.students[key].xp-=state.students[key].level*100;
+    state.students[key].level++;
+  }
+
+  saveToStorage();
+
+  // Done screen
+  document.getElementById('done-before').textContent=state.moodBefore;
+  document.getElementById('done-after').textContent=state.moodAfter;
+  document.getElementById('done-xp-msg').textContent=`+${xpGained} XP! Level ${state.level} Breather 🌟`;
+  document.getElementById('done-xpfill').style.width=((state.xp/(state.level*100))*100)+'%';
+  const rec=state.pendingReward?`🎁 ${(state.pendingReward[lang]||state.pendingReward.en).name}`:state.pendingTask?`✅ ${(state.pendingTask[lang]||state.pendingTask.en).name}`:'';
+  document.getElementById('done-reward-recap').textContent=rec;
+
+  // Reset session state
+  state.pendingReward=null;
+  state.pendingTask=null;
+  state.reflQ='';state.reflA='';
+  showScreen('screen-done');
+  launchConfetti();
+}
+
+// ============================================================
+// JOURNAL
+// ============================================================
+function renderJournal(){
+  const list=document.getElementById('journal-list');
+  if(!state.sessions.length){
+    list.innerHTML=`<div class="empty-state">${t('noJournal')}</div>`;
+    return;
+  }
+  list.innerHTML=state.sessions.map(s=>`
+    <div class="je">
+      <div class="je-date">${s.date}</div>
+      <div class="je-title">${s.breathEmoji} ${s.breathName}</div>
+      <div class="je-moods">
+        <span class="je-before">${s.moodBefore}</span>
+        <span class="je-arrow">→</span>
+        <span class="je-after">${s.moodAfter}</span>
+      </div>
+      ${s.reward?`<div class="je-extra">🎁 ${s.reward}</div>`:''}
+      ${s.task?`<div class="je-extra">✅ ${s.task}</div>`:''}
+      ${s.reflectionQ?`<div class="je-refl-q">💭 ${s.reflectionQ}</div>`:''}
+      ${s.reflection?`<div class="je-quote">"${s.reflection}"</div>`:''}
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// COLLECTION — ONLY EARNED ITEMS SHOWN
+// ============================================================
+function renderCollection(){
+  const grid=document.getElementById('coll-grid');
+  const empty=document.getElementById('coll-empty');
+  const earned=REWARDS.filter(r=>state.collection[r.en.name]>0);
+  if(!earned.length){
+    grid.style.display='none';
+    empty.style.display='block';
+    empty.textContent=t('noCollectionYet');
+    return;
+  }
+  grid.style.display='grid';
+  empty.style.display='none';
+  grid.innerHTML='';
+  earned.forEach(r=>{
+    const cnt=state.collection[r.en.name]||0;
+    const el=document.createElement('div');
+    el.className='coll-item';
+    const rn=(r[lang]||r.en).name;
+    el.innerHTML=`<div class="coll-cnt">×${cnt}</div><div class="coll-em">${r.emoji}</div><div class="coll-nm">${rn}</div>`;
+    el.onclick=()=>{
+      const rd=r[lang]||r.en;
+      document.getElementById('m-em').textContent=r.emoji;
+      document.getElementById('m-ttl').textContent=rd.name;
+      document.getElementById('m-txt').textContent=rd.say;
+      document.getElementById('coll-modal').classList.add('open');
+    };
+    grid.appendChild(el);
+  });
+}
+
+function closeModal(){document.getElementById('coll-modal').classList.remove('open');}
+
+// ============================================================
+// LEADERBOARD
+// ============================================================
+function renderLeaderboard(){
+  const list=document.getElementById('lb-list');
+  const students=Object.values(state.students).sort((a,b)=>b.sessions-a.sessions);
+  if(!students.length){list.innerHTML=`<div class="empty-state">No data yet!</div>`;return;}
+  list.innerHTML=students.map((s,i)=>`
+    <div class="lb-row ${i===0?'top1':i===1?'top2':i===2?'top3':''}">
+      <div class="lb-rank">${['🥇','🥈','🥉'][i]||`#${i+1}`}</div>
+      <div>
+        <div class="lb-name">${s.name}</div>
+        <div class="text-xs">${s.class||''}</div>
+      </div>
+      <div>
+        <div class="lb-pts">${s.sessions} sessions</div>
+        <div class="text-xs" style="color:var(--accent2)">Lv.${s.level}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// GUIDE
+// ============================================================
+function buildGuide(){
+  const list=document.getElementById('guide-list');
+  if(!list)return;
+  list.innerHTML='';
+  BREATHS.forEach(b=>{
+    const locked=state.level<b.unlockLevel;
+    const bdata=b[lang]||b.en;
+    const el=document.createElement('div');
+    el.className='guide-item'+(locked?' locked':'');
+    el.innerHTML=`
+      <div class="gi-head">
+        <div class="gi-em">${b.emoji}</div>
+        <div>
+          <div class="gi-nm">${bdata.name} ${locked?'🔒':''}</div>
+          <div class="gi-badge">${locked?`${t('unlocksAt')} ${b.unlockLevel}`:b.badge}</div>
+        </div>
+      </div>
+      <div class="gi-txt">${locked?'Complete more sessions to unlock this technique!':bdata.desc}</div>
+    `;
+    list.appendChild(el);
+  });
+}
+
+// ============================================================
+// TEACHER PANEL
+// ============================================================
+// Secret teacher access: hold T + E + A simultaneously
+const _keysHeld = new Set();
+document.addEventListener('keydown', e => {
+  _keysHeld.add(e.key.toLowerCase());
+  if(_keysHeld.has('t') && _keysHeld.has('e') && _keysHeld.has('a')) {
+    openTeacherPanel();
+  }
+});
+document.addEventListener('keyup', e => _keysHeld.delete(e.key.toLowerCase()));
+
+function openTeacherPanel(){
+  document.getElementById('teacher-modal').classList.add('open');
+  document.getElementById('teacher-lock').style.display='block';
+  document.getElementById('teacher-content').style.display='none';
+  document.getElementById('pin-input').value='';
+}
+function closeTeacherPanel(){document.getElementById('teacher-modal').classList.remove('open');}
+
+function unlockTeacher(){
+  const pin=document.getElementById('pin-input').value;
+  if(pin===state.teacherPin){
+    document.getElementById('teacher-lock').style.display='none';
+    document.getElementById('teacher-content').style.display='block';
+    renderTeacherContent();
+  }else{
+    document.getElementById('pin-input').value='';
+    document.getElementById('pin-input').placeholder='Wrong PIN, try again';
+    document.getElementById('pin-input').style.borderColor='#ef4444';
+  }
+}
+
+function openTTab(id){
+  document.querySelectorAll('.ttab').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('.tcontent').forEach(t=>t.classList.remove('act'));
+  document.getElementById('ttab-'+id).classList.add('act');
+  // Activate clicked tab button
+  document.querySelectorAll('.ttab').forEach(tb=>{
+    if(tb.getAttribute('onclick') && tb.getAttribute('onclick').includes("'" + id + "'"))tb.classList.add('act');
+  });
+}
+
+function renderTeacherContent(){
+  // Roster
+  const roster=document.getElementById('roster-list');
+  const students=Object.values(state.students);
+  if(!students.length){roster.innerHTML='<div class="empty-state">No students registered yet.</div>';}
+  else{
+    roster.innerHTML=students.map(s=>`
+      <div class="student-row">
+        <div><div class="sr-name">${s.name}</div><div class="sr-class">${s.class}</div></div>
+        <div class="class-badge">${s.class}</div>
+        <div class="sr-count">${s.sessions} sessions</div>
+      </div>
+    `).join('');
+  }
+
+  // Credit by class
+  const credit=document.getElementById('credit-list');
+  const byClass={};
+  state.sessions.forEach(s=>{
+    const c=s.studentClass||'Unknown';
+    if(!byClass[c])byClass[c]={sessions:[],names:new Set()};
+    byClass[c].sessions.push(s);
+    if(s.studentName)byClass[c].names.add(s.studentName);
+  });
+  if(!Object.keys(byClass).length){credit.innerHTML='<div class="empty-state">No sessions yet.</div>';}
+  else{
+    credit.innerHTML=Object.entries(byClass).map(([cls,data])=>`
+      <div style="margin-bottom:12px;">
+        <div style="font-weight:800;margin-bottom:6px;color:var(--gold);">${cls}</div>
+        ${[...data.names].map(name=>{
+          const sessCnt=data.sessions.filter(s=>s.studentName===name).length;
+          return `<div class="student-row" style="margin-bottom:4px;"><div class="sr-name">${name}</div><div class="sr-count">${sessCnt}×</div></div>`;
+        }).join('')}
+      </div>
+    `).join('');
+  }
+
+  // Sync breath select
+  const syncSel=document.getElementById('sync-breath-select');
+  syncSel.innerHTML='<div class="text-xs mb-8">Pick a breath for the class:</div>';
+  BREATHS.forEach(b=>{
+    const bd=b[lang]||b.en;
+    const btn=document.createElement('button');
+    btn.className='btn btn-secondary btn-sm';
+    btn.style.marginBottom='6px';btn.style.marginRight='6px';
+    btn.innerHTML=`${b.emoji} ${bd.name}`;
+    btn.onclick=()=>{
+      document.querySelectorAll('#sync-breath-select .btn').forEach(x=>x.classList.remove('btn-primary'));
+      btn.classList.add('btn-primary');
+      state._syncBreath=b;
+    };
+    syncSel.appendChild(btn);
+  });
+
+  // Settings
+  document.getElementById('school-name').value=state.schoolName||'';
+}
+
+function clearRoster(){
+  if(confirm('Clear ALL student data? This cannot be undone.')){
+    state.students={};state.sessions=[];state.collection={};
+    state.xp=0;state.level=1;state.streak=0;
+    saveToStorage();renderTeacherContent();
+  }
+}
+
+function savePin(){
+  const p=document.getElementById('new-pin').value.trim();
+  if(p.length>=4){state.teacherPin=p;saveToStorage();document.getElementById('settings-msg').textContent='PIN saved!';}
+}
+function saveSchool(){
+  state.schoolName=document.getElementById('school-name').value.trim();
+  saveToStorage();document.getElementById('settings-msg').textContent='Saved!';
+}
+
+function exportCSV(){
+  const rows=[['Name','Class','Date','Breath','Mood Before','Mood After','Reward/Task','Reflection']];
+  state.sessions.forEach(s=>rows.push([s.studentName||state.studentName,s.studentClass||state.studentClass,s.date,s.breathName,s.moodBefore,s.moodAfter,s.reward||s.task||'',s.reflection||'']));
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=`breathwork_${new Date().toLocaleDateString()}.csv`;
+  a.click();
+}
+
+// ============================================================
+// SYNC MODE
+// ============================================================
+function launchSync(){
+  const b=state._syncBreath||BREATHS[0];
+  closeTeacherPanel();
+  showScreen('screen-sync');
+  const bd=b[lang]||b.en;
+  document.getElementById('sync-breath-name').textContent=`${b.emoji} ${bd.name}`;
+  if(sync432Enabled) startAmbient432();
+  runSyncBreath(b);
+}
+
+let syncTimer=null;
+function runSyncBreath(breath){
+  let phase=0;
+  let round=0;
+  const totalRounds=3;
+  const bigTxt=document.getElementById('sync-big-txt');
+  const hintTxt=document.getElementById('sync-hint-txt');
+  const bar=document.getElementById('sync-phasebar');
+
+  function nextPhase(){
+    if(!document.getElementById('screen-sync').classList.contains('active'))return;
+    if(phase>=breath.phases.length){phase=0;round++;
+      if(round>=totalRounds){stopAmbient432();bigTxt.textContent='🌿';hintTxt.textContent='Session Complete! Amazing work everyone.';bar.style.width='100%';return;}
+    }
+    const p=breath.phases[phase];
+    bigTxt.textContent=p[lang]||p.en;
+    hintTxt.textContent=p.hint[lang]||p.hint.en;
+    bar.style.width='0%';
+    const dur=p.dur*1200; // 1.2x slower for group pacing — comfortable but not overwhelming
+    const start=performance.now();
+    function tick(now){
+      if(!document.getElementById('screen-sync').classList.contains('active'))return;
+      const prog=Math.min((now-start)/dur,1);
+      bar.style.width=(prog*100)+'%';
+      if(prog<1)requestAnimationFrame(tick);
+      else{phase++;setTimeout(nextPhase,300);}
+    }
+    requestAnimationFrame(tick);
+  }
+  nextPhase();
+}
+
+function stopSync(){stopAmbient432();showScreen('screen-home');closeTeacherPanel();}
+
+// ============================================================
+// CONFETTI
+// ============================================================
+function launchConfetti(){
+  const colors=['#7c3aed','#fbbf24','#f97316','#ec4899','#34d399','#38bdf8','#a78bfa'];
+  for(let i=0;i<50;i++){
+    const c=document.createElement('div');
+    c.className='cfc';
+    c.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${colors[i%colors.length]};animation-delay:${Math.random()*2}s;animation-duration:${Math.random()*2+2.5}s;transform:rotate(${Math.random()*360}deg);border-radius:${Math.random()<0.3?'50%':'2px'}`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),5000);
+  }
+}
+
+// ============================================================
+// TEACHER TAB CLICK HANDLER (global for onclick)
+// ============================================================
+// openTTab defined above - this is the canonical version
+
+
+// ============================================================
+// INIT
+// ============================================================
+function init(){
+  resizeCanvas();
+  loadFromStorage();
+  buildScene(state.selectedScene||'night');
+  requestAnimationFrame(animateScene);
+  buildMoodChips('mood-before-chips');
+  buildMoodChips('mood-after-chips');
+  buildBreathList();
+  buildGuide();
+
+  // Check if registered
+  if(!state.studentName){
+    showScreen('screen-register');
+  }else{
+    showScreen('screen-home');
+  }
+  updateHome();
+}
+
+init();
+
+// ============================================================
+// 432Hz AMBIENT SESSION CONTROL
+// ============================================================
+let ambientEnabled=false; // kept for backward compat
+let sync432Enabled=false;
+let ambientNodes=[];
+
+function toggleSync432(row){
+  sync432Enabled=!sync432Enabled;
+  const btn=document.getElementById('sync-hz-btn');
+  const knob=document.getElementById('sync-hz-knob');
+  if(sync432Enabled){
+    btn.style.background='var(--accent)';
+    knob.style.left='22px';
+    knob.style.background='#fff';
+    row.style.borderColor='var(--accent)';
+  } else {
+    btn.style.background='var(--surface)';
+    knob.style.left='2px';
+    knob.style.background='var(--text2)';
+    row.style.borderColor='var(--border)';
+  }
+}
+
+// legacy stub — kept so nothing breaks
+function toggle432Hz(row){}
+
+function startAmbient432(){
+  if(!ambientEnabled)return;
+  const ctx=getSoundCtx();
+  const dur=999; // effectively infinite — stopped manually
+  // Gentle 432Hz drone — very quiet, just beneath awareness
+  [[432,0.06],[216,0.04],[864,0.025]].forEach(([freq,vol])=>{
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.type='sine';
+    osc.frequency.value=freq;
+    gain.gain.setValueAtTime(0,ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(vol,ctx.currentTime+4); // fade in over 4s
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.start();
+    ambientNodes.push({osc,gain});
+  });
+}
+
+function stopAmbient432(){
+  const ctx=soundCtx;
+  ambientNodes.forEach(({osc,gain})=>{
+    try{
+      gain.gain.linearRampToValueAtTime(0,ctx.currentTime+2);
+      osc.stop(ctx.currentTime+2.1);
+    }catch(e){}
+  });
+  ambientNodes=[];
+}
+
+
+// 💡 Generates birdsong and 432Hz healing tone in the browser
+// ============================================================
+let soundCtx=null;
+let activeSoundNodes=[];
+
+function getSoundCtx(){
+  if(!soundCtx)soundCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(soundCtx.state==='suspended')soundCtx.resume();
+  return soundCtx;
+}
+
+function stopAllSounds(){
+  activeSoundNodes.forEach(n=>{try{n.stop();}catch(e){}});
+  activeSoundNodes=[];
+  const btn=document.getElementById('sound-play-btn');
+  if(btn){btn.textContent=btn.textContent.replace('⏹ Stop','▶ Play');btn.textContent=btn.innerHTML;}
+}
+
+function playRewardSound(type){
+  const btn=document.getElementById('sound-play-btn');
+  // If already playing, stop
+  if(activeSoundNodes.length>0){stopAllSounds();if(btn)btn.innerHTML='▶ Play '+(type==='birdsong'?'Birdsong':'432Hz Tone');return;}
+  if(btn)btn.innerHTML='⏹ Stop Playing';
+  if(type==='birdsong')playBirdsong();
+  else if(type==='432hz')play432hz();
+}
+
+function play432hz(){
+  const ctx=getSoundCtx();
+  const dur=30; // 30 seconds
+  // Main 432Hz sine tone
+  const osc=ctx.createOscillator();
+  const gain=ctx.createGain();
+  osc.type='sine';
+  osc.frequency.setValueAtTime(432,ctx.currentTime);
+  gain.gain.setValueAtTime(0,ctx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.18,ctx.currentTime+2);
+  gain.gain.setValueAtTime(0.18,ctx.currentTime+dur-3);
+  gain.gain.linearRampToValueAtTime(0,ctx.currentTime+dur);
+  osc.connect(gain);gain.connect(ctx.destination);
+  osc.start();osc.stop(ctx.currentTime+dur);
+  activeSoundNodes.push(osc);
+
+  // Harmonic overtone at 864Hz (octave)
+  const osc2=ctx.createOscillator();
+  const gain2=ctx.createGain();
+  osc2.type='sine';
+  osc2.frequency.setValueAtTime(864,ctx.currentTime);
+  gain2.gain.setValueAtTime(0,ctx.currentTime);
+  gain2.gain.linearRampToValueAtTime(0.07,ctx.currentTime+2);
+  gain2.gain.setValueAtTime(0.07,ctx.currentTime+dur-3);
+  gain2.gain.linearRampToValueAtTime(0,ctx.currentTime+dur);
+  osc2.connect(gain2);gain2.connect(ctx.destination);
+  osc2.start();osc2.stop(ctx.currentTime+dur);
+  activeSoundNodes.push(osc2);
+
+  // Gentle low drone at 216Hz (half)
+  const osc3=ctx.createOscillator();
+  const gain3=ctx.createGain();
+  osc3.type='sine';
+  osc3.frequency.setValueAtTime(216,ctx.currentTime);
+  gain3.gain.setValueAtTime(0,ctx.currentTime);
+  gain3.gain.linearRampToValueAtTime(0.06,ctx.currentTime+3);
+  gain3.gain.setValueAtTime(0.06,ctx.currentTime+dur-3);
+  gain3.gain.linearRampToValueAtTime(0,ctx.currentTime+dur);
+  osc3.connect(gain3);gain3.connect(ctx.destination);
+  osc3.start();osc3.stop(ctx.currentTime+dur);
+  activeSoundNodes.push(osc3);
+
+  setTimeout(()=>{activeSoundNodes=[];const b=document.getElementById('sound-play-btn');if(b)b.innerHTML='▶ Play 432Hz Tone';},dur*1000+500);
+}
+
+function playBirdsong(){
+  const ctx=getSoundCtx();
+  const dur=30;
+  let t=ctx.currentTime+0.5;
+
+  // Ambient gentle wind base
+  const bufSize=ctx.sampleRate*2;
+  const buf=ctx.createBuffer(1,bufSize,ctx.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<bufSize;i++)data[i]=(Math.random()*2-1)*0.015;
+  const wind=ctx.createBufferSource();
+  wind.buffer=buf;wind.loop=true;
+  const windFilter=ctx.createBiquadFilter();
+  windFilter.type='bandpass';windFilter.frequency.value=600;windFilter.Q.value=0.3;
+  const windGain=ctx.createGain();
+  windGain.gain.setValueAtTime(0,ctx.currentTime);
+  windGain.gain.linearRampToValueAtTime(0.12,ctx.currentTime+2);
+  windGain.gain.setValueAtTime(0.12,ctx.currentTime+dur-4);
+  windGain.gain.linearRampToValueAtTime(0,ctx.currentTime+dur);
+  wind.connect(windFilter);windFilter.connect(windGain);windGain.connect(ctx.destination);
+  wind.start();wind.stop(ctx.currentTime+dur);
+  activeSoundNodes.push(wind);
+
+  // Bird call generator — chirp patterns
+  function chirp(time,freq,freq2,chirpDur,vol){
+    const o=ctx.createOscillator();
+    const g=ctx.createGain();
+    o.type='sine';
+    o.frequency.setValueAtTime(freq,time);
+    o.frequency.exponentialRampToValueAtTime(freq2,time+chirpDur*0.6);
+    o.frequency.exponentialRampToValueAtTime(freq*0.9,time+chirpDur);
+    g.gain.setValueAtTime(0,time);
+    g.gain.linearRampToValueAtTime(vol,time+chirpDur*0.1);
+    g.gain.setValueAtTime(vol*0.8,time+chirpDur*0.7);
+    g.gain.linearRampToValueAtTime(0,time+chirpDur);
+    o.connect(g);g.connect(ctx.destination);
+    o.start(time);o.stop(time+chirpDur+0.05);
+    if(time<ctx.currentTime+dur)activeSoundNodes.push(o);
+  }
+
+  // Schedule natural-sounding bird patterns over 30 seconds
+  const birdPatterns=[
+    // [delay, baseFreq, peakFreq, duration, volume]
+    [0.5,  2200,3100,0.12,0.12],[0.7,  2200,3100,0.08,0.10],[0.95, 2200,3100,0.10,0.11],
+    [2.0,  1800,2600,0.15,0.09],[2.2,  1900,2700,0.12,0.08],
+    [3.8,  2800,3800,0.08,0.13],[3.95, 2800,3800,0.08,0.11],[4.15, 2800,3800,0.08,0.10],[4.4,  2800,4000,0.14,0.09],
+    [5.5,  1600,2400,0.20,0.08],
+    [7.0,  2200,3100,0.12,0.12],[7.2,  2200,3100,0.08,0.10],[7.45, 2200,3100,0.10,0.11],
+    [8.8,  3200,4200,0.07,0.10],[9.0,  3400,4400,0.07,0.09],
+    [10.5, 2000,2800,0.18,0.08],[10.8, 1900,2700,0.14,0.07],
+    [12.0, 2800,3800,0.08,0.13],[12.15,2800,3800,0.08,0.11],[12.35,2800,3800,0.08,0.10],[12.6, 2800,4000,0.14,0.09],
+    [14.0, 1600,2200,0.25,0.07],
+    [15.5, 2200,3100,0.12,0.11],[15.7, 2400,3300,0.10,0.10],
+    [17.0, 3000,4000,0.09,0.10],[17.2, 3200,4200,0.08,0.09],
+    [18.5, 1800,2600,0.15,0.09],[18.8, 1900,2700,0.12,0.08],
+    [20.0, 2200,3100,0.12,0.12],[20.2, 2200,3100,0.08,0.10],[20.5, 2200,3100,0.10,0.11],
+    [21.5, 2800,3800,0.08,0.12],[21.7, 2800,3800,0.08,0.10],[22.0, 2800,4000,0.14,0.09],
+    [23.5, 1600,2400,0.20,0.07],
+    [25.0, 2200,3100,0.12,0.11],[25.2, 2400,3300,0.10,0.10],
+    [26.5, 3000,4000,0.09,0.10],
+    [28.0, 2200,3100,0.12,0.10],[28.3, 2200,3100,0.08,0.09],[28.6, 2200,3200,0.14,0.08],
+  ];
+
+  birdPatterns.forEach(([delay,f1,f2,d,v])=>{
+    chirp(ctx.currentTime+delay,f1,f2,d,v);
+  });
+
+  setTimeout(()=>{activeSoundNodes=[];const b=document.getElementById('sound-play-btn');if(b)b.innerHTML='▶ Play Birdsong';},dur*1000+500);
+}
+
+</script>
+</body>
+</html>

@@ -252,6 +252,16 @@ textarea.text-input{resize:vertical;min-height:72px;}
 
 
 
+
+/* ONBOARDING */
+.ob-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(255,255,255,0.2);transition:all .3s;
+}
+.ob-dot.active{background:var(--accent2);transform:scale(1.3);}
+#ob-card{transition:opacity .25s ease;}
+#ob-card.fade{opacity:0;}
+
 /* Vibe title buttons */
 .vibe-btn{
   padding:6px 10px;border-radius:50px;font-size:.72rem;font-weight:700;
@@ -309,7 +319,7 @@ textarea.text-input{resize:vertical;min-height:72px;}
 .breath-name-big{
   font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;
 }
-.round-label{font-size:.8rem;color:var(--text2);margin-top:4px;}
+.round-label{font-size:.78rem;font-weight:800;color:#fff;margin-top:6px;background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);padding:3px 12px;border-radius:50px;display:inline-block;letter-spacing:.04em;text-shadow:0 1px 3px rgba(0,0,0,0.8);}
 .cycle-dots{display:flex;gap:8px;justify-content:center;margin-top:10px;}
 .cdot{
   width:10px;height:10px;border-radius:50%;
@@ -335,7 +345,7 @@ textarea.text-input{resize:vertical;min-height:72px;}
   box-shadow:0 0 50px rgba(139,92,246,.7),0 0 100px rgba(139,92,246,.25);
   display:flex;align-items:center;justify-content:center;
   font-size:min(2.4rem,6vw);
-  transition:transform .08s linear,background .5s;
+  transition:background .8s ease;
   cursor:default;user-select:none;
   position:relative;z-index:2;
 }
@@ -357,15 +367,13 @@ textarea.text-input{resize:vertical;min-height:72px;}
   min-height:22px;margin-bottom:12px;
 }
 
-.phase-bar-wrap{
-  width:100%;max-width:320px;height:5px;
-  background:rgba(255,255,255,.08);border-radius:3px;
-  margin:8px auto 16px;overflow:hidden;
-}
-.phase-bar{
-  height:100%;border-radius:3px;
-  background:linear-gradient(90deg,var(--accent),var(--pink));
-  transition:width .05s linear;width:0%;
+.breath-timer-txt{
+  font-size:2.2rem;font-weight:300;
+  color:rgba(255,255,255,0.35);
+  text-align:center;margin-top:8px;
+  font-family:'Syne',sans-serif;
+  letter-spacing:.05em;
+  min-height:2.8rem;
 }
 
 /* AFFIRMATION */
@@ -647,7 +655,10 @@ textarea.text-input{resize:vertical;min-height:72px;}
   <div class="home-header">
     <div class="title-xl" data-t="appName" id="app-title-tap" onclick="handleTitleTap()" style="cursor:default;user-select:none;">Breathe With Me</div>
     <div class="text-sm mt-8" data-t="tagline">Your 5-minute calm zone ✨</div>
-    <div id="h-vibe" style="margin-top:6px;font-size:.78rem;font-weight:800;color:var(--accent2);letter-spacing:.04em;opacity:.9;"></div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px;">
+      <div id="h-vibe" style="font-size:.78rem;font-weight:800;color:var(--accent2);letter-spacing:.04em;opacity:.9;"></div>
+      <button id="h-switchuser" onclick="confirmSwitchUser()" style="display:none;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:50px;color:var(--text2);font-size:.68rem;font-family:'Nunito',sans-serif;font-weight:700;padding:3px 10px;cursor:pointer;letter-spacing:.03em;">↩ Not you?</button>
+    </div>
   </div>
 
   <div class="home-stats">
@@ -700,6 +711,35 @@ textarea.text-input{resize:vertical;min-height:72px;}
       <button class="lang-btn active" id="home-lang-en" onclick="setLang('en')">EN</button>
       <button class="lang-btn" id="home-lang-es" onclick="setLang('es')">ES</button>
       <button class="lang-btn" id="home-lang-fr" onclick="setLang('fr')">FR</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== ONBOARDING (first time only) ===== -->
+<div id="screen-onboard" class="screen" style="justify-content:center;padding:20px 16px;">
+  <div style="width:100%;max-width:420px;">
+
+    <!-- Step indicator dots -->
+    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:24px;" id="ob-dots">
+      <div class="ob-dot active" id="ob-dot-0"></div>
+      <div class="ob-dot" id="ob-dot-1"></div>
+      <div class="ob-dot" id="ob-dot-2"></div>
+      <div class="ob-dot" id="ob-dot-3"></div>
+    </div>
+
+    <!-- Cards container -->
+    <div id="ob-card" class="card card-glow" style="min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 24px;gap:12px;">
+    </div>
+
+    <!-- Navigation -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;">
+      <button id="ob-back-btn" class="btn btn-secondary" onclick="obBack()" style="visibility:hidden;">← Back</button>
+      <button id="ob-next-btn" class="btn btn-primary" onclick="obNext()" style="min-width:120px;">Next →</button>
+    </div>
+
+    <div style="text-align:center;margin-top:12px;">
+      <button onclick="skipOnboard()" style="background:none;border:none;color:var(--text2);font-size:.75rem;cursor:pointer;font-family:'Nunito',sans-serif;">Skip for now</button>
     </div>
   </div>
 </div>
@@ -799,144 +839,49 @@ textarea.text-input{resize:vertical;min-height:72px;}
         <circle cx="140" cy="140" r="130" stroke="rgba(139,92,246,0.25)" stroke-width="1.5" stroke-dasharray="8 14"/>
       </svg>
       <div class="orb" id="br-orb">
-        <svg id="girl-svg" viewBox="0 0 120 130" width="88%" height="88%"
+        <svg id="girl-svg" viewBox="0 0 100 100" width="75%" height="75%"
              style="display:block;margin:auto;overflow:visible;"
              xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <radialGradient id="sk" cx="44%" cy="36%" r="58%">
-              <stop offset="0%" stop-color="#f0b887"/>
-              <stop offset="50%" stop-color="#d4854a"/>
-              <stop offset="100%" stop-color="#b5611e"/>
-            </radialGradient>
-            <radialGradient id="hr" cx="40%" cy="25%" r="65%">
-              <stop offset="0%" stop-color="#3d1800"/>
-              <stop offset="60%" stop-color="#1e0900"/>
-              <stop offset="100%" stop-color="#0d0400"/>
-            </radialGradient>
-            <radialGradient id="bsh" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#e05828" stop-opacity="0.5"/>
-              <stop offset="100%" stop-color="#e05828" stop-opacity="0"/>
-            </radialGradient>
-            <radialGradient id="tshirt" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#a8dfc5"/>
-              <stop offset="100%" stop-color="#68b898"/>
-            </radialGradient>
+            <!-- Tint the emoji brown by shifting hue and saturating -->
+            <filter id="brown-tint" color-interpolation-filters="sRGB">
+              <feColorMatrix type="matrix"
+                values="0.55  0.45  0     0  0.05
+                        0.25  0.35  0.05  0  0
+                        0     0.05  0.1   0  0
+                        0     0     0     1  0"/>
+            </filter>
           </defs>
 
-          <!-- Shirt -->
-          <path d="M34 118 Q34 105 44 102 Q52 99 60 99 Q68 99 76 102 Q86 105 86 118 Z" fill="url(#tshirt)"/>
-          <!-- Neck -->
-          <rect x="54" y="83" width="12" height="13" rx="5" fill="url(#sk)"/>
+          <!-- Big centered 😌 emoji with brown filter applied -->
+          <text x="50" y="72" font-size="68"
+                text-anchor="middle"
+                filter="url(#brown-tint)"
+                style="user-select:none;">😌</text>
 
-          <!-- Face — big soft circle -->
-          <circle cx="60" cy="66" r="28" fill="url(#sk)"/>
-
-          <!-- Subtle chin shadow -->
-          <ellipse cx="60" cy="90" rx="14" ry="4" fill="#b56020" opacity="0.15"/>
-
-          <!-- Cheek blush — big and soft like image 3 -->
-          <ellipse cx="36" cy="72" rx="12" ry="9" fill="url(#bsh)"/>
-          <ellipse cx="84" cy="72" rx="12" ry="9" fill="url(#bsh)"/>
-
-          <!-- Eyes — gentle upward curve, very peaceful (image 3 style) -->
-          <path d="M44 63 Q52 57 60 63" stroke="#1a0800" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-          <path d="M60 63 Q68 57 76 63" stroke="#1a0800" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-          <!-- Tiny eyelid fill — makes eyes look soft not just lines -->
-          <path d="M44 63 Q52 57 60 63" stroke="none" fill="#c07040" opacity="0.12"/>
-          <path d="M60 63 Q68 57 76 63" stroke="none" fill="#c07040" opacity="0.12"/>
-          <!-- 3 lashes each eye -->
-          <line x1="46" y1="62.5" x2="44.5" y2="59.5" stroke="#1a0800" stroke-width="1.4" stroke-linecap="round"/>
-          <line x1="52" y1="59"   x2="52"   y2="56.5" stroke="#1a0800" stroke-width="1.4" stroke-linecap="round"/>
-          <line x1="58" y1="62.5" x2="59.5" y2="59.5" stroke="#1a0800" stroke-width="1.4" stroke-linecap="round"/>
-          <line x1="62" y1="62.5" x2="60.5" y2="59.5" stroke="#1a0800" stroke-width="1.4" stroke-linecap="round"/>
-          <line x1="68" y1="59"   x2="68"   y2="56.5" stroke="#1a0800" stroke-width="1.4" stroke-linecap="round"/>
-          <line x1="74" y1="62.5" x2="75.5" y2="59.5" stroke="#1a0800" stroke-width="1.4" stroke-linecap="round"/>
-
-          <!-- Nose — two tiny nostrils, very subtle -->
-          <circle cx="57" cy="72" r="1.6" fill="#9a4810" opacity="0.3"/>
-          <circle cx="63" cy="72" r="1.6" fill="#9a4810" opacity="0.3"/>
-
-          <!-- Mouth — sweet closed smile -->
-          <path d="M52 79 Q60 86 68 79" stroke="#c06030" stroke-width="2" fill="none" stroke-linecap="round"/>
-          <path d="M52.5 79.5 Q56 83 60 84 Q64 83 67.5 79.5" fill="#d07848" opacity="0.5"/>
-
-          <!-- Breath puffs -->
-          <circle cx="60" cy="90" r="2.5" fill="rgba(255,255,255,0.4)">
-            <animate attributeName="cy" values="90;84;76" dur="2.2s" repeatCount="indefinite"/>
-            <animate attributeName="r" values="2.5;3;1" dur="2.2s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.4;0.15;0" dur="2.2s" repeatCount="indefinite"/>
+          <!-- Breath puffs rising from mouth area -->
+          <circle cx="50" cy="80" r="2" fill="rgba(255,255,255,0.32)">
+            <animate attributeName="cy" values="80;72;62" dur="2.4s" repeatCount="indefinite"/>
+            <animate attributeName="r"  values="2;2.5;0.8" dur="2.4s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.32;0.1;0" dur="2.4s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="56" cy="92" r="1.6" fill="rgba(255,255,255,0.3)">
-            <animate attributeName="cy" values="92;86;78" dur="2.6s" begin="0.6s" repeatCount="indefinite"/>
-            <animate attributeName="r" values="1.6;2;0.7" dur="2.6s" begin="0.6s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.3;0.1;0" dur="2.6s" begin="0.6s" repeatCount="indefinite"/>
+          <circle cx="46" cy="82" r="1.4" fill="rgba(255,255,255,0.22)">
+            <animate attributeName="cy" values="82;74;65" dur="2.9s" begin="0.8s" repeatCount="indefinite"/>
+            <animate attributeName="r"  values="1.4;1.8;0.5" dur="2.9s" begin="0.8s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.22;0.07;0" dur="2.9s" begin="0.8s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="64" cy="92" r="1.3" fill="rgba(255,255,255,0.25)">
-            <animate attributeName="cy" values="92;86;79" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
-            <animate attributeName="r" values="1.3;1.7;0.6" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.25;0.08;0" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
+          <circle cx="54" cy="82" r="1.2" fill="rgba(255,255,255,0.18)">
+            <animate attributeName="cy" values="82;75;66" dur="2.6s" begin="1.5s" repeatCount="indefinite"/>
+            <animate attributeName="r"  values="1.2;1.5;0.4" dur="2.6s" begin="1.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.18;0.05;0" dur="2.6s" begin="1.5s" repeatCount="indefinite"/>
           </circle>
-
-          <!-- BIG FLUFFY NATURAL HAIR — soft rounded cloud shape -->
-          <!-- Dark base/shadow behind head -->
-          <ellipse cx="60" cy="42" rx="37" ry="34" fill="#180800"/>
-
-          <!-- Main hair mass — many overlapping soft circles = fluffy cloud -->
-          <!-- Outer profile bumps -->
-          <circle cx="24" cy="55" r="18" fill="#200d00"/>
-          <circle cx="96" cy="55" r="18" fill="#200d00"/>
-          <circle cx="20" cy="42" r="15" fill="#1a0a00"/>
-          <circle cx="100" cy="42" r="15" fill="#1a0a00"/>
-          <circle cx="32" cy="20" r="16" fill="#1e0c00"/>
-          <circle cx="88" cy="20" r="16" fill="#1e0c00"/>
-          <circle cx="60" cy="13" r="18" fill="#201000"/>
-          <circle cx="18" cy="62" r="11" fill="#180900"/>
-          <circle cx="102" cy="62" r="11" fill="#180900"/>
-
-          <!-- Inner hair volume — slightly lighter for depth -->
-          <circle cx="38" cy="32" r="18" fill="#2a1200"/>
-          <circle cx="82" cy="32" r="18" fill="#2a1200"/>
-          <circle cx="60" cy="22" r="20" fill="#2e1500"/>
-          <circle cx="44" cy="44" r="14" fill="#251000"/>
-          <circle cx="76" cy="44" r="14" fill="#251000"/>
-
-          <!-- Hairline — blends hair into forehead naturally -->
-          <path d="M35 50 Q42 34 60 30 Q78 34 85 50" fill="#2a1200"/>
-
-          <!-- Subtle shine on top -->
-          <ellipse cx="50" cy="19" rx="8" ry="5" fill="rgba(255,140,40,0.09)" transform="rotate(-15,50,19)"/>
-          <ellipse cx="68" cy="16" rx="7" ry="4" fill="rgba(255,140,40,0.07)"/>
-
-          <!-- Butterfly clip — upper right of hair, pink & gold -->
-          <g transform="translate(85,26) rotate(20)">
-            <ellipse cx="-10" cy="-5" rx="11" ry="7" fill="#fbbfd8" opacity="0.95"/>
-            <ellipse cx=" 10" cy="-5" rx="11" ry="7" fill="#f472b6" opacity="0.95"/>
-            <ellipse cx="-8"  cy=" 5" rx="8"  ry="5" fill="#ec4899" opacity="0.9"/>
-            <ellipse cx=" 8"  cy=" 5" rx="8"  ry="5" fill="#db2777" opacity="0.9"/>
-            <path d="M0,-1 Q-7,-7 -15,-4" stroke="rgba(255,255,255,0.3)" stroke-width="0.9" fill="none"/>
-            <path d="M0, 1 Q-6, 6 -12, 6" stroke="rgba(255,255,255,0.2)" stroke-width="0.7" fill="none"/>
-            <path d="M0,-1 Q 7,-7  15,-4" stroke="rgba(255,255,255,0.3)" stroke-width="0.9" fill="none"/>
-            <path d="M0, 1 Q 6, 6  12, 6" stroke="rgba(255,255,255,0.2)" stroke-width="0.7" fill="none"/>
-            <circle cx="-7" cy="-2" r="1.8" fill="rgba(255,255,255,0.28)"/>
-            <circle cx=" 7" cy="-2" r="1.8" fill="rgba(255,255,255,0.28)"/>
-            <ellipse cx="0" cy="0" rx="2.2" ry="5" fill="#fbbf24"/>
-            <circle  cx="0" cy="-5" r="1.6" fill="#fde68a"/>
-            <path d="M-0.8,-5 Q-5,-11 -4,-14" stroke="#fbbfd8" stroke-width="1" fill="none" stroke-linecap="round"/>
-            <path d="M 0.8,-5 Q 5,-11  4,-14" stroke="#fbbfd8" stroke-width="1" fill="none" stroke-linecap="round"/>
-            <circle cx="-4" cy="-14" r="1.5" fill="#ec4899"/>
-            <circle cx=" 4" cy="-14" r="1.5" fill="#ec4899"/>
-          </g>
-          <!-- Sparkle near clip -->
-          <text x="91" y="14" font-size="7" fill="rgba(255,210,230,0.8)" transform="rotate(10,91,14)">✦</text>
         </svg>
       </div>      </div>
     </div>
 
     <div class="breath-phase-txt" id="br-phase-txt">Get Ready...</div>
     <div class="breath-hint" id="br-hint"></div>
-    <div class="phase-bar-wrap">
-      <div class="phase-bar" id="br-phasebar"></div>
-    </div>
+    <div class="breath-timer-txt" id="br-timer-txt"></div>
   </div>
 
 </div>
@@ -1056,7 +1001,11 @@ textarea.text-input{resize:vertical;min-height:72px;}
 <!-- ===== SYNC MODE ===== -->
 <div id="screen-sync" class="screen" style="justify-content:center;">
   <div class="text-center w-full">
-    <div class="text-sm mb-8" id="sync-breath-name"></div>
+    <div class="text-sm mb-4" id="sync-breath-name"></div>
+    <!-- Breath description shown before countdown -->
+    <div id="sync-desc-card" style="display:none;max-width:400px;margin:0 auto 20px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:16px 20px;">
+      <div style="font-size:.82rem;color:rgba(255,255,255,0.75);line-height:1.65;" id="sync-desc-txt"></div>
+    </div>
     <div class="sync-giant" id="sync-big-txt">Ready</div>
     <div class="sync-hint" id="sync-hint-txt"></div>
     <div class="phase-bar-wrap mt-20" style="max-width:400px;margin-left:auto;margin-right:auto;">
@@ -1079,7 +1028,20 @@ textarea.text-input{resize:vertical;min-height:72px;}
   </nav>
 </div><!-- end app -->
 
-<!-- ===== TEACHER PANEL ===== -->
+<!-- ===== SWITCH USER MODAL ===== -->
+<div class="modal-wrap" id="switchuser-modal" onclick="cancelSwitch()">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:340px;">
+    <div class="m-em">👋</div>
+    <div class="m-ttl" id="switchuser-title">Switch student?</div>
+    <div class="m-txt" style="margin-bottom:20px;">Your progress is saved. The next student can sign in with their own name.</div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-secondary" onclick="cancelSwitch()">Stay logged in</button>
+      <button class="btn btn-primary" onclick="switchUser()">Switch user 👋</button>
+    </div>
+  </div>
+</div>
+
+
 <div class="teacher-modal" id="teacher-modal">
   <div class="teacher-panel">
     <div class="flex justify-between items-center mb-16">
@@ -1346,8 +1308,8 @@ const BREATHS = [
       desc:"La base de toute respiration. Ton ventre se gonfle comme un ballon en inspirant par le nez, puis se dégonfle doucement en expirant. Rentre le nombril vers la colonne pour vider complètement."},
     emoji:'🫁',badge:'Starter',color:'#7c3aed',
     phases:[
-      {en:'Breathe In 👃',es:'Inhala 👃',fr:'Inspire 👃',hint:{en:'Belly softly rises…',es:'La barriga sube suave…',fr:'Ventre qui se gonfle doucement…'},dur:3,dir:1},
-      {en:'Breathe Out 💨',es:'Exhala 💨',fr:'Expire 💨',hint:{en:'Let it go… easy',es:'Suéltalo… suave',fr:'Laisse partir… doucement'},dur:4,dir:-1},
+      {en:'Breathe In 👃',es:'Inhala 👃',fr:'Inspire 👃',hint:{en:'Belly softly rises…',es:'La barriga sube suave…',fr:'Ventre qui se gonfle doucement…'},dur:4,dir:1},
+      {en:'Breathe Out 💨',es:'Exhala 💨',fr:'Expire 💨',hint:{en:'Let it go… easy',es:'Suéltalo… suave',fr:'Laisse partir… doucement'},dur:5,dir:-1},
     ]
   },
   {
@@ -2293,7 +2255,7 @@ function showScreen(id){
   document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active-tab'));
   if(tabMap[id])document.getElementById(tabMap[id])?.classList.add('active-tab');
   // Hide bottom nav on immersive screens
-  const hideNav=['screen-breath','screen-sync','screen-register'];
+  const hideNav=['screen-breath','screen-sync','screen-register','screen-onboard'];
   const nav=document.getElementById('bottom-nav');
   if(nav)nav.style.display=hideNav.includes(id)?'none':'flex';
 }
@@ -2302,6 +2264,8 @@ function updateHome(){
   document.getElementById('h-level').textContent=state.level;
   const vibe=document.getElementById('h-vibe');
   if(vibe)vibe.textContent=state.vibeTitle?(state.studentName+' · '+state.vibeTitle):'';
+  const switchBtn=document.getElementById('h-switchuser');
+  if(switchBtn){switchBtn.style.display=state.studentName?'inline-block':'none';switchBtn.textContent='↩ Not '+state.studentName+'?';}
   document.getElementById('h-streak').textContent=state.streak;
   document.getElementById('h-sessions').textContent=state.sessions.length;
   const xpPct=(state.xp/(state.level*100))*100;
@@ -2312,6 +2276,83 @@ function updateHome(){
   document.getElementById('h-collCount').textContent=`${earned} items`;
   const tips=[t('tip0'),t('tip1'),t('tip2'),t('tip3'),t('tip4'),t('tip5')];
   document.getElementById('h-tip').textContent=tips[Math.floor(Date.now()/86400000)%tips.length];
+}
+
+
+// ============================================================
+// ONBOARDING — shown once to first-time users
+// ============================================================
+const OB_STEPS = [
+  {
+    emoji: '👋',
+    title: 'Hey, welcome!',
+    body: 'This app helps you breathe your way to calm. Takes about 5 minutes. You got this.'
+  },
+  {
+    emoji: '🫁',
+    title: 'How it works',
+    body: 'A glowing circle will grow and shrink. When it grows — breathe IN through your nose. When it shrinks — breathe OUT through your mouth. Just follow the circle. No rushing.'
+  },
+  {
+    emoji: '🌀',
+    title: 'Go at your own pace',
+    body: 'The circle is a guide, not a timer. If you need more time on any breath, that\'s totally okay. Nobody is watching. This is yours.'
+  },
+  {
+    emoji: '🏆',
+    title: 'You earn rewards!',
+    body: 'Finish a session and you\'ll unlock XP, level up, and earn cool wellness rewards. The more you show up for yourself, the more you unlock.'
+  }
+];
+let obStep=0;
+
+function renderObStep(){
+  const step=OB_STEPS[obStep];
+  const card=document.getElementById('ob-card');
+  // Fade out
+  card.classList.add('fade');
+  setTimeout(()=>{
+    card.innerHTML=`
+      <div style="font-size:3.5rem;line-height:1;">${step.emoji}</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.25rem;margin-top:8px;">${step.title}</div>
+      <div style="font-size:.95rem;color:var(--text2);line-height:1.65;margin-top:6px;">${step.body}</div>
+    `;
+    card.classList.remove('fade');
+  },220);
+  // Update dots
+  document.querySelectorAll('.ob-dot').forEach((d,i)=>{
+    d.classList.toggle('active',i===obStep);
+  });
+  // Back button visibility
+  document.getElementById('ob-back-btn').style.visibility=obStep===0?'hidden':'visible';
+  // Last step: change Next to Start
+  const nextBtn=document.getElementById('ob-next-btn');
+  nextBtn.textContent=obStep===OB_STEPS.length-1?'Start Breathing 💨':'Next →';
+}
+
+function obNext(){
+  if(obStep<OB_STEPS.length-1){obStep++;renderObStep();}
+  else{skipOnboard();}
+}
+
+function obBack(){
+  if(obStep>0){obStep--;renderObStep();}
+}
+
+function skipOnboard(){
+  state.onboardSeen=true;
+  saveToStorage();
+  showScreen('screen-home');
+}
+
+function showOnboardingIfNeeded(){
+  if(!state.onboardSeen){
+    obStep=0;
+    renderObStep();
+    showScreen('screen-onboard');
+  }else{
+    showScreen('screen-home');
+  }
 }
 
 // ============================================================
@@ -2343,12 +2384,48 @@ function registerStudent(){
     state.students[key]={name,class:cls,sessions:0,xp:0,level:1};
   }
   saveToStorage();
-  showScreen('screen-home');
+  showOnboardingIfNeeded();
 }
 
 function checkRegistration(){
   if(!state.studentName){showScreen('screen-register');return false;}
   return true;
+}
+
+function confirmSwitchUser(){
+  const modal=document.getElementById('switchuser-modal');
+  const title=document.getElementById('switchuser-title');
+  if(title)title.textContent='Sign out '+state.studentName+'?';
+  if(modal)modal.classList.add('open');
+}
+
+function cancelSwitch(){
+  const modal=document.getElementById('switchuser-modal');
+  if(modal)modal.classList.remove('open');
+}
+
+function switchUser(){
+  // Save current student data first
+  saveToStorage();
+  // Clear ONLY the active session identity — keep all session data in the students roster
+  state.studentName='';
+  state.studentClass='';
+  state.vibeTitle='';
+  state.xp=0;
+  state.level=1;
+  state.streak=0;
+  state.lastDate=null;
+  state.sessions=[];
+  state.collection={};
+  state.moodBefore='';
+  state.moodAfter='';
+  state.pendingReward=null;
+  state.pendingTask=null;
+  state.onboardSeen=false; // show onboarding for the new user
+  // Save the cleared state
+  localStorage.setItem('bwm_v2', JSON.stringify(state));
+  cancelSwitch();
+  showScreen('screen-register');
 }
 
 // ============================================================
@@ -2479,11 +2556,7 @@ function launchRound(){
     const phaseTxt=document.getElementById('br-phase-txt');
     const hintTxt=document.getElementById('br-hint');
     const orb=document.getElementById('br-orb');
-    const bar=document.getElementById('br-phasebar');
-    orb.style.background='radial-gradient(circle at 35% 35%,#a78bfa,#5b21b6)';
-    orb.style.boxShadow='0 0 40px rgba(139,92,246,.5)';
-    bar.style.width='0%';
-    orb.style.transform='scale(1)';
+    if(orb){orb.style.background='radial-gradient(circle at 35% 35%,#a78bfa,#5b21b6)';orb.style.boxShadow='0 0 40px rgba(139,92,246,.5)';orb.style.transform='scale(1)';}
 
     // Build a quick plain-English summary of the phases
     const steps=b.phases.map(p=>p[lang]||p.en).join('  →  ');
@@ -2497,8 +2570,10 @@ function launchRound(){
     previewLines.forEach(({txt,hint,delay})=>{
       setTimeout(()=>{
         if(!state.isBreathing)return;
-        phaseTxt.textContent=txt;
-        hintTxt.textContent=hint;
+        const pt=document.getElementById('br-phase-txt');
+        const ht=document.getElementById('br-hint');
+        if(pt)pt.textContent=txt;
+        if(ht)ht.textContent=hint;
       },delay);
     });
     setTimeout(()=>{
@@ -2521,29 +2596,42 @@ function runPhase(){
   document.getElementById('br-hint').textContent=pdata_hint;
 
   const orb=document.getElementById('br-orb');
-  const bar=document.getElementById('br-phasebar');
+  const timerTxt=document.getElementById('br-timer-txt');
+  if(!orb)return; // screen was left before animation started
 
   // Color phase
   const colors={'1':'radial-gradient(circle at 35% 35%,#a78bfa,#5b21b6)','-1':'radial-gradient(circle at 35% 35%,#f97316,#b91c1c)','0':'radial-gradient(circle at 35% 35%,#34d399,#047857)'};
   orb.style.background=colors[String(phase.dir)];
   orb.style.boxShadow=phase.dir===1?'0 0 60px rgba(139,92,246,.8),0 0 120px rgba(139,92,246,.3)':phase.dir===-1?'0 0 60px rgba(249,115,22,.8),0 0 100px rgba(249,115,22,.25)':'0 0 60px rgba(52,211,153,.7),0 0 100px rgba(52,211,153,.2)';
 
-  const targetScale=phase.dir===1?1.5:phase.dir===-1?0.65:orbScale;
+  const targetScale=phase.dir===1?1.6:phase.dir===-1?0.55:orbScale;
   const dur=phase.dur*1000;
   const startTime=performance.now();
   const startScale=orbScale;
+  let lastShownSec=-1;
 
   clearInterval(phaseTimer);
-  bar.style.width='0%';
+  if(timerTxt)timerTxt.textContent='';
 
   function tick(now){
     if(!state.isBreathing)return;
     const elapsed=now-startTime;
     const prog=Math.min(elapsed/dur,1);
-    const ease=prog<0.5?2*prog*prog:(1-Math.pow(-2*prog+2,2)/2);
+    // Pure sine ease — mirrors the actual rhythm of a real breath, no sudden jumps
+    const ease=(1-Math.cos(prog*Math.PI))/2;
     orbScale=startScale+(targetScale-startScale)*ease;
     orb.style.transform=`scale(${orbScale})`;
-    bar.style.width=(prog*100)+'%';
+    // Show gentle countdown seconds — remaining time, fades feeling of urgency
+    if(timerTxt){
+      const secsLeft=Math.ceil((dur-elapsed)/1000);
+      if(secsLeft!==lastShownSec&&secsLeft>0){
+        lastShownSec=secsLeft;
+        timerTxt.textContent=secsLeft;
+        timerTxt.style.opacity='1';
+        // Fade it slightly so it doesn't feel like a countdown
+        setTimeout(()=>{if(timerTxt)timerTxt.style.opacity='0.3';},600);
+      }
+    }
     if(prog<1){requestAnimationFrame(tick);}
     else{
       state.currentPhase++;
@@ -2756,6 +2844,7 @@ function renderCollection(){
   const grid=document.getElementById('coll-grid');
   const empty=document.getElementById('coll-empty');
   const earned=REWARDS.filter(r=>state.collection[r.en.name]>0);
+  if(!grid||!empty)return;
   if(!earned.length){
     grid.style.display='none';
     empty.style.display='block';
@@ -2967,9 +3056,51 @@ function launchSync(){
   closeTeacherPanel();
   showScreen('screen-sync');
   const bd=b[lang]||b.en;
-  document.getElementById('sync-breath-name').textContent=`${b.emoji} ${bd.name}`;
-  if(sync432Enabled) startAmbient432();
-  runSyncBreath(b);
+
+  const bigTxt=document.getElementById('sync-big-txt');
+  const hintTxt=document.getElementById('sync-hint-txt');
+  const nameEl=document.getElementById('sync-breath-name');
+  const descCard=document.getElementById('sync-desc-card');
+  const descTxt=document.getElementById('sync-desc-txt');
+  const bar=document.getElementById('sync-phasebar');
+
+  nameEl.textContent=`${b.emoji} ${bd.name}`;
+  bar.style.width='0%';
+
+  // Build a plain-english phase summary e.g. "Breathe In 4s → Hold 4s → Breathe Out 4s"
+  const phaseSummary=b.phases.map(p=>{
+    const name=p[lang]||p.en;
+    return `${name} (${p.dur}s)`;
+  }).join('  →  ');
+
+  // Show the description card
+  descCard.style.display='block';
+  descTxt.innerHTML=`<strong style="color:rgba(255,255,255,0.9);display:block;margin-bottom:6px;">Here's how it works:</strong>${phaseSummary}<br><br><span style="color:rgba(255,255,255,0.5);font-size:.75rem;">Follow along together. No rush — just breathe.</span>`;
+  bigTxt.textContent='Get ready…';
+  hintTxt.textContent='';
+
+  // 3-2-1 countdown then go
+  const steps=[
+    {delay:2000, big:'3', hint:''},
+    {delay:3000, big:'2', hint:''},
+    {delay:4000, big:'1', hint:''},
+    {delay:5000, big:'GO 💨', hint:'Follow the class…'},
+  ];
+
+  steps.forEach(({delay,big,hint})=>{
+    setTimeout(()=>{
+      if(!document.getElementById('screen-sync').classList.contains('active'))return;
+      bigTxt.textContent=big;
+      hintTxt.textContent=hint;
+    },delay);
+  });
+
+  setTimeout(()=>{
+    if(!document.getElementById('screen-sync').classList.contains('active'))return;
+    descCard.style.display='none';
+    if(sync432Enabled) startAmbient432();
+    runSyncBreath(b);
+  },6200);
 }
 
 let syncTimer=null;
@@ -3263,3 +3394,4 @@ function playBirdsong(){
 </script>
 </body>
 </html>
+
